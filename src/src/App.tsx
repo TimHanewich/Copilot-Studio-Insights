@@ -883,8 +883,7 @@ function App() {
         <div className="app-shell">
           <aside className="app-sidebar" aria-label="Main navigation">
             <div className="app-brand">
-              <span>Copilot Studio</span>
-              <strong>Insights</strong>
+              <strong>Copilot Studio Insights</strong>
             </div>
             <nav className="app-nav">
               {APP_NAV_ITEMS.map((item) => (
