@@ -882,7 +882,7 @@ function App() {
                           <dd>{selectedTranscriptReviewDetails.duration}</dd>
                         </div>
                         <div className="knowledge-summary">
-                          <dt>Knowledge sources used</dt>
+                          <dt>Knowledge sources used in this session</dt>
                           <dd>
                             {selectedTranscriptReviewDetails.knowledgeSources.length >
                             0 ? (
