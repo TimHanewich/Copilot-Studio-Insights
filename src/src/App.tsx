@@ -65,6 +65,16 @@ type TranscriptReviewDetails = {
   knowledgeSources: string[]
 }
 
+type AppView = 'dashboard' | 'agents' | 'makers' | 'knowledge' | 'feedback'
+
+const APP_NAV_ITEMS: { id: AppView; label: string }[] = [
+  { id: 'dashboard', label: 'Dashboard' },
+  { id: 'agents', label: 'Agents' },
+  { id: 'makers', label: 'Makers' },
+  { id: 'knowledge', label: 'Knowledge' },
+  { id: 'feedback', label: 'Feedback' },
+]
+
 function getEnvironmentOrigin(environmentUrl: string) {
   const url = new URL(environmentUrl)
 
@@ -729,14 +739,15 @@ function App() {
   const [conversationTranscriptCount, setConversationTranscriptCount] =
     useState<number | null>(null)
   const [isLoadingDataverseData, setIsLoadingDataverseData] = useState(false)
-  const [isLoginPaneFading, setIsLoginPaneFading] = useState(false)
   const [showBotPanel, setShowBotPanel] = useState(false)
+  const [activeView, setActiveView] = useState<AppView>('dashboard')
   const [selectedBotId, setSelectedBotId] = useState<string | null>(null)
   const [selectedTranscriptId, setSelectedTranscriptId] = useState<string | null>(
     null,
   )
   const isLoggingIn = inProgress !== InteractionStatus.None
   const botSummaries = buildBotSummaries(bots, conversationTranscripts)
+  const totalSessionCount = conversationTranscriptCount ?? conversationTranscripts.length
   const selectedBot =
     selectedBotId && botSummaries.find((bot) => bot.id === selectedBotId)
   const selectedBotTranscripts = selectedBot
@@ -755,8 +766,8 @@ function App() {
   async function handleLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setErrorMessage('')
-    setIsLoginPaneFading(false)
     setShowBotPanel(false)
+    setActiveView('dashboard')
     setSelectedBotId(null)
     setSelectedTranscriptId(null)
 
@@ -818,8 +829,8 @@ function App() {
       setConversationTranscriptCount(conversationTranscriptResult.count)
       setBots(botResult.records)
       setSystemUsers(systemUserResult.records)
-      setIsLoginPaneFading(true)
-      window.setTimeout(() => setShowBotPanel(true), 450)
+      setActiveView('dashboard')
+      setShowBotPanel(true)
     } catch (error) {
       setErrorMessage(
         error instanceof Error
@@ -832,25 +843,67 @@ function App() {
   }
 
   return (
-    <main className="landing-page">
-      <p className="credit">
-        Made by{' '}
-        <a href="https://timh.ai" target="_blank" rel="noreferrer">
-          Tim Hanewich
-        </a>
-      </p>
+    <main className={`landing-page${showBotPanel ? ' has-app-shell' : ''}`}>
+      {!showBotPanel && (
+        <p className="credit">
+          Made by{' '}
+          <a href="https://timh.ai" target="_blank" rel="noreferrer">
+            Tim Hanewich
+          </a>
+        </p>
+      )}
       {showBotPanel ? (
-        <section
-          className="bot-panel"
-          aria-labelledby={
-            selectedTranscript
-              ? 'conversation-title'
-              : selectedBot
-                ? 'agent-title'
-                : 'bot-panel-title'
-          }
-        >
-          {selectedBot && selectedTranscript ? (
+        <div className="app-shell">
+          <aside className="app-sidebar" aria-label="Main navigation">
+            <div className="app-brand">
+              <span>Copilot Studio</span>
+              <strong>Insights</strong>
+            </div>
+            <nav className="app-nav">
+              {APP_NAV_ITEMS.map((item) => (
+                <button
+                  className={activeView === item.id ? 'is-active' : ''}
+                  key={item.id}
+                  type="button"
+                  onClick={() => {
+                    setActiveView(item.id)
+                    setSelectedBotId(null)
+                    setSelectedTranscriptId(null)
+                  }}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </nav>
+            <p className="app-sidebar-credit">
+              Made by{' '}
+              <a href="https://timh.ai" target="_blank" rel="noreferrer">
+                Tim Hanewich
+              </a>
+            </p>
+          </aside>
+          <section className="app-content" aria-label="Application content">
+            {activeView === 'dashboard' ? (
+              <div className="dashboard-page">
+                <div className="dashboard-heading">
+                  <p className="eyebrow">Dashboard</p>
+                  <h1 id="dashboard-title">Copilot Studio Activity</h1>
+                  <p>{environmentOrigin}</p>
+                </div>
+                <div className="dashboard-metrics" aria-label="Environment totals">
+                  <article>
+                    <span>{bots.length.toLocaleString()}</span>
+                    <strong>Total agents</strong>
+                    <p>Agents found in this Dataverse environment.</p>
+                  </article>
+                  <article>
+                    <span>{totalSessionCount.toLocaleString()}</span>
+                    <strong>Total sessions</strong>
+                    <p>ConversationTranscript records across all agents.</p>
+                  </article>
+                </div>
+              </div>
+            ) : activeView === 'agents' && selectedBot && selectedTranscript ? (
             <>
               <section
                 className="conversation-pane"
@@ -954,7 +1007,7 @@ function App() {
                 </div>
               </section>
             </>
-          ) : selectedBot ? (
+            ) : activeView === 'agents' && selectedBot ? (
             <>
               <button
                 type="button"
@@ -1054,7 +1107,7 @@ function App() {
                 </section>
               </div>
             </>
-          ) : (
+            ) : activeView === 'agents' ? (
             <>
               <div className="panel-heading">
                 <h1 id="bot-panel-title">Copilot Studio Activity in Your Environment</h1>
@@ -1063,8 +1116,7 @@ function App() {
               <div className="panel-summary">
                 <span>{bots.length.toLocaleString()} agents</span>
                 <span>
-                  {conversationTranscriptCount?.toLocaleString() ??
-                    conversationTranscripts.length.toLocaleString()}{' '}
+                  {totalSessionCount.toLocaleString()}{' '}
                   sessions
                 </span>
               </div>
@@ -1109,11 +1161,22 @@ function App() {
                 )}
               </div>
             </>
-          )}
-        </section>
+            ) : (
+              <div className="placeholder-page">
+                <p className="eyebrow">
+                  {APP_NAV_ITEMS.find((item) => item.id === activeView)?.label}
+                </p>
+                <h1>
+                  {APP_NAV_ITEMS.find((item) => item.id === activeView)?.label} insights
+                </h1>
+                <p>This section is ready for the next layer of analysis.</p>
+              </div>
+            )}
+          </section>
+        </div>
       ) : (
         <form
-          className={`login-card${isLoginPaneFading ? ' is-fading' : ''}`}
+          className="login-card"
           aria-labelledby="page-title"
           onSubmit={handleLogin}
         >
