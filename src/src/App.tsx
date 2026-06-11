@@ -1151,7 +1151,7 @@ function App() {
             ) : activeView === 'agents' ? (
             <>
               <div className="panel-heading">
-                <h1 id="bot-panel-title">Copilot Studio Activity in Your Environment</h1>
+                <h1 id="bot-panel-title">Agents in Your Environment</h1>
                 <p className="environment-name">{environmentOrigin}</p>
               </div>
               <div className="panel-summary">
