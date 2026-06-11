@@ -31,8 +31,16 @@ type BotSummary = {
   name: string
   iconSource: string | null
   initials: string
+  record: DataverseRecord
+  lookupKeys: string[]
   transcriptCount: number
   mostRecentConversation: Date | null
+}
+
+type TranscriptDetail = {
+  id: string
+  date: Date | null
+  messageCount: number
 }
 
 function getEnvironmentOrigin(environmentUrl: string) {
@@ -198,6 +206,12 @@ function getBotLookupKeys(bot: DataverseRecord) {
     .map(normalizeLookupKey)
 }
 
+function hasMatchingLookupKey(firstKeys: string[], secondKeys: string[]) {
+  const lookupKeySet = new Set(firstKeys)
+
+  return secondKeys.some((lookupKey) => lookupKeySet.has(lookupKey))
+}
+
 function getTranscriptLookupKeys(transcript: DataverseRecord) {
   const metadata = parseTranscriptMetadata(transcript)
 
@@ -225,6 +239,17 @@ function getConversationDate(transcript: DataverseRecord) {
   return Number.isNaN(date.getTime()) ? null : date
 }
 
+function getRecordDate(record: DataverseRecord, fieldNames: string[]) {
+  const rawDate = getStringValue(record, fieldNames)
+
+  if (!rawDate) {
+    return null
+  }
+
+  const date = new Date(rawDate)
+  return Number.isNaN(date.getTime()) ? null : date
+}
+
 function buildBotSummaries(
   bots: DataverseRecord[],
   conversationTranscripts: DataverseRecord[],
@@ -234,6 +259,8 @@ function buildBotSummaries(
     name: getBotName(bot),
     iconSource: getBotIconSource(bot),
     initials: getBotInitials(getBotName(bot)),
+    record: bot,
+    lookupKeys: getBotLookupKeys(bot),
     transcriptCount: 0,
     mostRecentConversation: null as Date | null,
   }))
@@ -290,6 +317,93 @@ function formatDate(date: Date | null) {
   }).format(date)
 }
 
+function formatDateOnly(date: Date | null) {
+  if (!date) {
+    return 'Unknown'
+  }
+
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: 'medium',
+  }).format(date)
+}
+
+function getSystemUserDisplayName(systemUsers: DataverseRecord[], userId: string | null) {
+  if (!userId) {
+    return 'Unknown'
+  }
+
+  const normalizedUserId = normalizeLookupKey(userId)
+  const user = systemUsers.find((systemUser) =>
+    [
+      getStringValue(systemUser, ['systemuserid', 'ownerid', 'id']),
+      getStringValue(systemUser, ['azureactivedirectoryobjectid']),
+    ]
+      .filter((value): value is string => Boolean(value))
+      .map(normalizeLookupKey)
+      .includes(normalizedUserId),
+  )
+
+  return (
+    user &&
+    (getStringValue(user, ['fullname', 'name', 'domainname', 'internalemailaddress']) ??
+      userId)
+  ) || userId
+}
+
+function getTranscriptMessageCount(transcript: DataverseRecord) {
+  const content = transcript.content
+
+  if (typeof content !== 'string') {
+    return 0
+  }
+
+  try {
+    const parsedContent: unknown = JSON.parse(content)
+
+    if (
+      parsedContent &&
+      typeof parsedContent === 'object' &&
+      'activities' in parsedContent &&
+      Array.isArray(parsedContent.activities)
+    ) {
+      return parsedContent.activities.filter(
+        (activity: unknown) =>
+          activity &&
+          typeof activity === 'object' &&
+          'type' in activity &&
+          activity.type === 'message',
+      ).length
+    }
+  } catch {
+    return 0
+  }
+
+  return 0
+}
+
+function buildTranscriptDetailsForBot(
+  bot: BotSummary,
+  conversationTranscripts: DataverseRecord[],
+): TranscriptDetail[] {
+  return conversationTranscripts
+    .filter((transcript) =>
+      hasMatchingLookupKey(bot.lookupKeys, getTranscriptLookupKeys(transcript)),
+    )
+    .map((transcript, index) => ({
+      id:
+        getStringValue(transcript, ['conversationtranscriptid', 'activityid', 'id']) ??
+        `transcript-${index}`,
+      date: getConversationDate(transcript),
+      messageCount: getTranscriptMessageCount(transcript),
+    }))
+    .sort((first, second) => {
+      const firstTime = first.date?.getTime() ?? 0
+      const secondTime = second.date?.getTime() ?? 0
+
+      return secondTime - firstTime
+    })
+}
+
 function App() {
   const { instance, inProgress } = useMsal()
   const [environmentUrl, setEnvironmentUrl] = useState('')
@@ -305,14 +419,21 @@ function App() {
   const [isLoadingDataverseData, setIsLoadingDataverseData] = useState(false)
   const [isLoginPaneFading, setIsLoginPaneFading] = useState(false)
   const [showBotPanel, setShowBotPanel] = useState(false)
+  const [selectedBotId, setSelectedBotId] = useState<string | null>(null)
   const isLoggingIn = inProgress !== InteractionStatus.None
   const botSummaries = buildBotSummaries(bots, conversationTranscripts)
+  const selectedBot =
+    selectedBotId && botSummaries.find((bot) => bot.id === selectedBotId)
+  const selectedBotTranscripts = selectedBot
+    ? buildTranscriptDetailsForBot(selectedBot, conversationTranscripts)
+    : []
 
   async function handleLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setErrorMessage('')
     setIsLoginPaneFading(false)
     setShowBotPanel(false)
+    setSelectedBotId(null)
 
     const trimmedEnvironmentUrl = environmentUrl.trim()
     if (!trimmedEnvironmentUrl) {
@@ -394,50 +515,159 @@ function App() {
         </a>
       </p>
       {showBotPanel ? (
-        <section className="bot-panel" aria-labelledby="bot-panel-title">
-          <div className="panel-heading">
-            <h1 id="bot-panel-title">Your Environment</h1>
-            <p className="environment-name">{environmentOrigin}</p>
-          </div>
-          <div className="panel-summary">
-            <span>{bots.length.toLocaleString()} agents</span>
-            <span>
-              {conversationTranscriptCount?.toLocaleString() ??
-                conversationTranscripts.length.toLocaleString()}{' '}
-              sessions
-            </span>
-            <span>{systemUsers.length.toLocaleString()} system users</span>
-          </div>
-          <div className="bot-list" aria-label="Bots in this environment">
-            {botSummaries.length > 0 ? (
-              botSummaries.map((bot) => (
-                <article className="bot-row" key={bot.id}>
-                  <div className="bot-main">
-                    {bot.iconSource ? (
-                      <img className="bot-icon" src={bot.iconSource} alt="" />
+        <section
+          className="bot-panel"
+          aria-labelledby={selectedBot ? 'agent-title' : 'bot-panel-title'}
+        >
+          {selectedBot ? (
+            <>
+              <button
+                type="button"
+                className="back-button"
+                onClick={() => setSelectedBotId(null)}
+              >
+                Back to all bots
+              </button>
+              <div className="agent-detail">
+                <section className="agent-profile" aria-labelledby="agent-title">
+                  <div className="agent-hero">
+                    {selectedBot.iconSource ? (
+                      <img className="agent-icon" src={selectedBot.iconSource} alt="" />
                     ) : (
-                      <span className="bot-icon bot-icon-fallback" aria-hidden="true">
-                        {bot.initials}
+                      <span className="agent-icon bot-icon-fallback" aria-hidden="true">
+                        {selectedBot.initials}
                       </span>
                     )}
                     <div>
-                      <h2>{bot.name}</h2>
-                      <p>
-                        Most recent interaction:{' '}
-                        {formatDate(bot.mostRecentConversation)}
-                      </p>
+                      <h1 id="agent-title">{selectedBot.name}</h1>
+                      <p>{getStringValue(selectedBot.record, ['schemaname'])}</p>
                     </div>
                   </div>
-                  <div className="bot-stat">
-                    <span>{bot.transcriptCount.toLocaleString()}</span>
-                    <small>recorded sessions</small>
+                  <dl className="detail-grid">
+                    <div>
+                      <dt>Owner</dt>
+                      <dd>
+                        {getSystemUserDisplayName(
+                          systemUsers,
+                          getStringValue(selectedBot.record, [
+                            '_ownerid_value',
+                            '_owninguser_value',
+                          ]),
+                        )}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>Created by</dt>
+                      <dd>
+                        {getSystemUserDisplayName(
+                          systemUsers,
+                          getStringValue(selectedBot.record, ['_createdby_value']),
+                        )}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>Created</dt>
+                      <dd>
+                        {formatDateOnly(
+                          getRecordDate(selectedBot.record, ['createdon']),
+                        )}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>Last modified</dt>
+                      <dd>
+                        {formatDate(
+                          getRecordDate(selectedBot.record, ['modifiedon']),
+                        )}
+                      </dd>
+                    </div>
+                  </dl>
+                </section>
+                <section
+                  className="transcript-panel"
+                  aria-labelledby="transcript-panel-title"
+                >
+                  <div>
+                    <h2 id="transcript-panel-title">
+                      {selectedBotTranscripts.length.toLocaleString()} Recorded Sessions
+                    </h2>
                   </div>
-                </article>
-              ))
-            ) : (
-              <p className="empty-message">No bots were found in this environment.</p>
-            )}
-          </div>
+                  <div className="transcript-list">
+                    {selectedBotTranscripts.length > 0 ? (
+                      selectedBotTranscripts.map((transcript) => (
+                        <article className="transcript-row" key={transcript.id}>
+                          <span>{formatDate(transcript.date)}</span>
+                          <strong>
+                            {transcript.messageCount.toLocaleString()} messages
+                          </strong>
+                        </article>
+                      ))
+                    ) : (
+                      <p className="empty-message">
+                        No ConversationTranscripts were found for this bot.
+                      </p>
+                    )}
+                  </div>
+                </section>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="panel-heading">
+                <h1 id="bot-panel-title">Your Environment</h1>
+                <p className="environment-name">{environmentOrigin}</p>
+              </div>
+              <div className="panel-summary">
+                <span>{bots.length.toLocaleString()} agents</span>
+                <span>
+                  {conversationTranscriptCount?.toLocaleString() ??
+                    conversationTranscripts.length.toLocaleString()}{' '}
+                  sessions
+                </span>
+                <span>{systemUsers.length.toLocaleString()} system users</span>
+              </div>
+              <div className="bot-list" aria-label="Bots in this environment">
+                {botSummaries.length > 0 ? (
+                  botSummaries.map((bot) => (
+                    <button
+                      className="bot-row"
+                      key={bot.id}
+                      type="button"
+                      onClick={() => setSelectedBotId(bot.id)}
+                    >
+                      <div className="bot-main">
+                        {bot.iconSource ? (
+                          <img className="bot-icon" src={bot.iconSource} alt="" />
+                        ) : (
+                          <span
+                            className="bot-icon bot-icon-fallback"
+                            aria-hidden="true"
+                          >
+                            {bot.initials}
+                          </span>
+                        )}
+                        <div>
+                          <h2>{bot.name}</h2>
+                          <p>
+                            Most recent interaction:{' '}
+                            {formatDate(bot.mostRecentConversation)}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="bot-stat">
+                        <span>{bot.transcriptCount.toLocaleString()}</span>
+                        <small>recorded sessions</small>
+                      </div>
+                    </button>
+                  ))
+                ) : (
+                  <p className="empty-message">
+                    No bots were found in this environment.
+                  </p>
+                )}
+              </div>
+            </>
+          )}
         </section>
       ) : (
         <form
