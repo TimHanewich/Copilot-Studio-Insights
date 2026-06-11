@@ -7,6 +7,8 @@ const DATAVERSE_DELEGATED_SCOPE = 'user_impersonation'
 const CONVERSATION_TRANSCRIPT_TABLE = 'conversationtranscripts'
 const BOTS_TABLE = 'bots'
 const SYSTEM_USERS_TABLE = 'systemusers'
+const LAST_ENVIRONMENT_URL_STORAGE_KEY =
+  'copilot-studio-insights:last-environment-url'
 
 type DataverseRecord = Record<string, unknown>
 
@@ -89,6 +91,27 @@ function getEnvironmentOrigin(environmentUrl: string) {
 
 function buildDataverseScope(environmentOrigin: string) {
   return `${environmentOrigin}/${DATAVERSE_DELEGATED_SCOPE}`
+}
+
+function getStoredEnvironmentUrl() {
+  if (typeof window === 'undefined') {
+    return ''
+  }
+
+  try {
+    return window.localStorage.getItem(LAST_ENVIRONMENT_URL_STORAGE_KEY) ?? ''
+  } catch (error) {
+    console.warn('Unable to read the saved environment URL.', error)
+    return ''
+  }
+}
+
+function storeLastEnvironmentUrl(environmentUrl: string) {
+  try {
+    window.localStorage.setItem(LAST_ENVIRONMENT_URL_STORAGE_KEY, environmentUrl)
+  } catch (error) {
+    console.warn('Unable to save the environment URL.', error)
+  }
 }
 
 async function fetchDataverseCollection(
@@ -774,7 +797,7 @@ function buildTranscriptDetailsForBot(
 
 function App() {
   const { instance, inProgress } = useMsal()
-  const [environmentUrl, setEnvironmentUrl] = useState('')
+  const [environmentUrl, setEnvironmentUrl] = useState(getStoredEnvironmentUrl)
   const [errorMessage, setErrorMessage] = useState('')
   const [environmentOrigin, setEnvironmentOrigin] = useState('')
   const [conversationTranscripts, setConversationTranscripts] = useState<
@@ -862,6 +885,7 @@ function App() {
     try {
       parsedEnvironmentOrigin = getEnvironmentOrigin(trimmedEnvironmentUrl)
       scope = buildDataverseScope(parsedEnvironmentOrigin)
+      storeLastEnvironmentUrl(trimmedEnvironmentUrl)
     } catch {
       setErrorMessage(
         'Enter a valid environment URL, such as https://org53194471.crm.dynamics.com.',
