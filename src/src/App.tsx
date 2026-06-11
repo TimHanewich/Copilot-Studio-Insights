@@ -830,32 +830,34 @@ function App() {
         >
           {selectedBot && selectedTranscript ? (
             <>
-              <button
-                type="button"
-                className="back-button"
-                onClick={() => setSelectedTranscriptId(null)}
-              >
-                Back to agent
-              </button>
               <section
                 className="conversation-pane"
                 aria-labelledby="conversation-title"
               >
-                <div className="conversation-header">
-                  {selectedBot.iconSource ? (
-                    <img className="agent-icon" src={selectedBot.iconSource} alt="" />
-                  ) : (
-                    <span className="agent-icon bot-icon-fallback" aria-hidden="true">
-                      {selectedBot.initials}
-                    </span>
-                  )}
-                  <div>
-                    <p className="eyebrow">Recorded session</p>
-                    <h1 id="conversation-title">{selectedBot.name}</h1>
-                    <p>
-                      {formatDate(selectedTranscript.date)} ·{' '}
-                      {selectedTranscript.messageCount.toLocaleString()} messages
-                    </p>
+                <div className="conversation-topbar">
+                  <button
+                    type="button"
+                    className="back-button"
+                    onClick={() => setSelectedTranscriptId(null)}
+                  >
+                    Back to agent
+                  </button>
+                  <div className="conversation-header">
+                    {selectedBot.iconSource ? (
+                      <img className="agent-icon" src={selectedBot.iconSource} alt="" />
+                    ) : (
+                      <span className="agent-icon bot-icon-fallback" aria-hidden="true">
+                        {selectedBot.initials}
+                      </span>
+                    )}
+                    <div>
+                      <p className="eyebrow">Recorded session</p>
+                      <h1 id="conversation-title">{selectedBot.name}</h1>
+                      <p>
+                        {formatDate(selectedTranscript.date)} ·{' '}
+                        {selectedTranscript.messageCount.toLocaleString()} messages
+                      </p>
+                    </div>
                   </div>
                 </div>
                 <div className="conversation-review-layout">

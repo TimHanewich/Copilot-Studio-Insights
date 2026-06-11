@@ -432,7 +432,18 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
+}
+
+.conversation-topbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.conversation-topbar .back-button {
+  flex: 0 0 auto;
+  align-self: center;
 }
 
 .conversation-review-layout {
@@ -450,27 +461,34 @@
 }
 
 .conversation-header {
+  flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
-  gap: 18px;
-  padding: 24px;
+  gap: 12px;
+  padding: 12px 16px;
   border: 1px solid rgba(17, 24, 39, 0.08);
-  border-radius: 22px;
+  border-radius: 18px;
   background: rgba(255, 255, 255, 0.68);
+}
+
+.conversation-header .agent-icon {
+  width: 52px;
+  height: 52px;
 }
 
 .conversation-header h1 {
   margin: 2px 0 0;
   color: #111827;
-  font-size: clamp(2rem, 5vw, 3.8rem);
-  line-height: 0.9;
-  letter-spacing: -0.06em;
+  font-size: clamp(1.45rem, 3vw, 2.4rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
 }
 
 .conversation-header p:last-child {
-  margin: 8px 0 0;
+  margin: 4px 0 0;
   color: #374151;
-  font-size: 1rem;
+  font-size: 0.92rem;
 }
 
 .review-summary {
