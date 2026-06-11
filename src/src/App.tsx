@@ -430,7 +430,7 @@ function App() {
                   </div>
                   <div className="bot-stat">
                     <span>{bot.transcriptCount.toLocaleString()}</span>
-                    <small>ConversationTranscripts</small>
+                    <small>recorded sessions</small>
                   </div>
                 </article>
               ))
