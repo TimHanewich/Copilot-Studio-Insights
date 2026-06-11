@@ -624,6 +624,28 @@ function getFeedbackByReplyToId(transcript: DataverseRecord) {
   return feedbackByReplyToId
 }
 
+function getFeedbackReactionLabel(reaction: string) {
+  if (reaction === 'like') {
+    return 'Liked'
+  }
+
+  if (reaction === 'dislike') {
+    return 'Disliked'
+  }
+
+  return reaction
+}
+
+function getFeedbackReactionIcon(reaction: string) {
+  return reaction === 'dislike' ? '👎' : '👍'
+}
+
+function getFeedbackTooltip(feedback: MessageFeedback) {
+  const label = getFeedbackReactionLabel(feedback.reaction)
+
+  return feedback.text ? `${label}: ${feedback.text}` : label
+}
+
 function getTranscriptReviewDetails(transcript: DataverseRecord): TranscriptReviewDetails {
   const sessionInfo = getSessionInfo(transcript)
 
@@ -911,19 +933,13 @@ function App() {
                           </span>
                           <p>{message.text}</p>
                           {message.feedback && (
-                            <div className="message-feedback">
-                              <strong>
-                                Feedback:{' '}
-                                {message.feedback.reaction === 'like'
-                                  ? 'Liked'
-                                  : message.feedback.reaction === 'dislike'
-                                    ? 'Disliked'
-                                    : message.feedback.reaction}
-                              </strong>
-                              {message.feedback.text && (
-                                <span>{message.feedback.text}</span>
-                              )}
-                            </div>
+                            <span
+                              className={`message-feedback-badge is-${message.feedback.reaction}`}
+                              title={getFeedbackTooltip(message.feedback)}
+                              aria-label={getFeedbackTooltip(message.feedback)}
+                            >
+                              {getFeedbackReactionIcon(message.feedback.reaction)}
+                            </span>
                           )}
                           {message.date && (
                             <time dateTime={message.date.toISOString()}>
