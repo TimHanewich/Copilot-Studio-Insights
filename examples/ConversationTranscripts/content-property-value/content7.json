@@ -1,0 +1,575 @@
+{
+  "activities": [
+    {
+      "valueType": "ConversationInfo",
+      "type": "trace",
+      "timestamp": 1778773438,
+      "timestampMs": 1778773438218,
+      "from": {
+        "id": "",
+        "role": 0
+      },
+      "value": {
+        "lastSessionOutcome": "Resolved",
+        "lastSessionOutcomeReason": "Resolved",
+        "isDesignMode": true,
+        "locale": "en-US"
+      }
+    },
+    {
+      "id": "5276190d-b8bd-43e3-ab7c-d2cbbfcef9aa",
+      "type": "message",
+      "timestamp": 1778773438,
+      "timestampMs": 1778773438218,
+      "from": {
+        "id": "e46116d6-326b-4879-1c57-509352eaf550",
+        "aadObjectId": "f7a5eb8f-85f6-4851-8c71-5f40cdc9145a",
+        "role": 1
+      },
+      "channelId": "pva-studio",
+      "textFormat": "plain",
+      "text": "Explain the two containment sequences: “MFA compromised (block-first)” vs “MFA intact (standard)”. What’s the rationale for the ordering?",
+      "attachments": [],
+      "channelData": {
+        "attachmentSizes": [],
+        "enableDiagnostics": true,
+        "testMode": "Text",
+        "clientActivityID": "weshn7ewcj"
+      }
+    },
+    {
+      "valueType": "DynamicPlanReceived",
+      "id": "94957212-bd9f-464b-b086-401ac1e3b7fb",
+      "type": "event",
+      "timestamp": 1778773442,
+      "timestampMs": 1778773442641,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "name": "DynamicPlanReceived",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "5276190d-b8bd-43e3-ab7c-d2cbbfcef9aa",
+      "value": {
+        "steps": [
+          "P:UniversalSearchTool"
+        ],
+        "isFinalPlan": false,
+        "planIdentifier": "e37d0c61-d944-478e-9ec2-f2da7cecfebc"
+      }
+    },
+    {
+      "id": "60373074-d276-4dd4-af1d-2c8a3b59c6ad",
+      "type": "event",
+      "timestamp": 1778773442,
+      "timestampMs": 1778773442641,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "name": "DynamicPlanReceivedDebug",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "5276190d-b8bd-43e3-ab7c-d2cbbfcef9aa",
+      "value": {
+        "summary": "",
+        "ask": "Explain the two containment sequences: “MFA compromised (block-first)” vs “MFA intact (standard)”. What’s the rationale for the ordering?",
+        "planIdentifier": "e37d0c61-d944-478e-9ec2-f2da7cecfebc",
+        "isFinalPlan": false
+      }
+    },
+    {
+      "valueType": "DynamicPlanStepTriggered",
+      "id": "47fc1f75-3734-4f50-a312-9a3970019615",
+      "type": "event",
+      "timestamp": 1778773442,
+      "timestampMs": 1778773442645,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "name": "DynamicPlanStepTriggered",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "5276190d-b8bd-43e3-ab7c-d2cbbfcef9aa",
+      "value": {
+        "planIdentifier": "e37d0c61-d944-478e-9ec2-f2da7cecfebc",
+        "stepId": "6f4fad81-d116-48bd-9e2e-c1f3d262e8e1",
+        "taskDialogId": "P:UniversalSearchTool",
+        "thought": "The user is asking about two containment sequences: \"MFA compromised (block-first)\" vs \"MFA intact (standard)\". Let me search the SOPs for this information.",
+        "state": 1,
+        "hasRecommendations": false,
+        "type": "KnowledgeSource"
+      }
+    },
+    {
+      "id": "2e2e32ae-0049-453b-8631-c451f6ad5c03",
+      "type": "event",
+      "timestamp": 1778773442,
+      "timestampMs": 1778773442659,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "name": "DynamicPlanStepBindUpdate",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "5276190d-b8bd-43e3-ab7c-d2cbbfcef9aa",
+      "value": {
+        "taskDialogId": "P:UniversalSearchTool",
+        "stepId": "6f4fad81-d116-48bd-9e2e-c1f3d262e8e1",
+        "arguments": {
+          "enable_summarization": false,
+          "search_keywords": "MFA compromised, block-first, MFA intact, standard containment, containment sequence, rationale",
+          "search_query": "MFA compromised block-first containment sequence vs MFA intact standard containment sequence rationale"
+        },
+        "planIdentifier": "e37d0c61-d944-478e-9ec2-f2da7cecfebc",
+        "autoFilledArguments": [
+          "search_keywords",
+          "search_query"
+        ]
+      }
+    },
+    {
+      "id": "3d02602c-fbc3-4a2e-8f74-adacec71cb7d",
+      "type": "event",
+      "timestamp": 1778773443,
+      "timestampMs": 1778773443670,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "name": "UniversalSearchToolTraceData",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "5276190d-b8bd-43e3-ab7c-d2cbbfcef9aa",
+      "value": {
+        "toolId": "P:UniversalSearchTool",
+        "knowledgeSources": [
+          "BingUnscopedSearchKnowledge",
+          "craa5_agenthiQ4p0.file.Harris_Health_Microsoft_Entra_ID_SOP.html_OX-",
+          "craa5_agenthiQ4p0.file.Harris_Health_ORDR_Medical_Devices_SOP.html_N_9",
+          "craa5_agenthiQ4p0.file.Harris_Health_Rapid7_InsightVM_SOP.html__u8",
+          "craa5_agenthiQ4p0.file.Harris_Health_Radware_AppWall_SOP.html_02J",
+          "craa5_agenthiQ4p0.file.Harris_Health_CrowdStrike_Falcon_SOP.html_JDN",
+          "craa5_agenthiQ4p0.file.Harris_Health_Radware_DefensePro_SOP.html_7m8",
+          "craa5_agenthiQ4p0.file.Harris_Health_Microsoft_Purview_SOP.html_Mmr"
+        ],
+        "outputKnowledgeSources": [
+          "craa5_agenthiQ4p0.file.Harris_Health_Microsoft_Entra_ID_SOP.html_OX-",
+          "BingUnscopedSearchKnowledge"
+        ],
+        "fullResults": [],
+        "filteredResults": [],
+        "searchErrors": []
+      }
+    },
+    {
+      "id": "280d853a-30cc-468b-93d1-1bca788dd124",
+      "type": "event",
+      "timestamp": 1778773443,
+      "timestampMs": 1778773443678,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "name": "DynamicPlanStepFinished",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "5276190d-b8bd-43e3-ab7c-d2cbbfcef9aa",
+      "value": {
+        "taskDialogId": "P:UniversalSearchTool",
+        "stepId": "6f4fad81-d116-48bd-9e2e-c1f3d262e8e1",
+        "observation": {
+          "downloaded_files": null,
+          "search_result": {
+            "search_errors": [],
+            "search_results": [
+              {
+                "FileType": "",
+                "IconUrl": "",
+                "Name": "Harris_Health_Microsoft_Entra_ID_SOP.html",
+                "SourceId": "3cc5cca6-4cd7-4569-aefa-88eb7b4dd22e",
+                "Text": ". Use when you observe active attacker activity: mail forwarding rules, lateral movement, or data exfiltration. 4 Require MFA re-registration (recommended for all compromises) Even when MFA appears intact, require re-registration as a precaution. The attacker may have added a secondary device you haven't noticed yet. 🔐 MFA Method Management How to view, reset, and manage a user's MFA methods — critical during account compromise recovery. Viewing a User's MFA Methods 1 Navigate to the user Entra ID → Users → select the user → Authentication methods (https://learn.microsoft.com/en-us/entra/identity/authentication/howto-mfa-userdevicesettings) . 2 Review registered methods You'll see all registered MFA methods: phone numbers, Microsoft Authenticator app, FIDO2 keys, software OATH tokens. Check for any methods the user doesn't recognize — an attacker may have registered their own device. During Account Compromise Recovery 3 Require MFA re-registration Click \"Require re-register multifactor authentication\" . This deletes all existing MFA methods and forces the user to set up MFA from scratch on next login. This ensures any attacker-registered methods are removed. 4 Revoke sessions Click \"Revoke sessions\" to force re-authentication immediately. Attacker Persistence via MFA: A common attacker technique is to register their own MFA device (phone or authenticator app) on the compromised account. This lets them bypass future password resets because they can still complete MFA. Always check for unfamiliar MFA methods and require re-registration during compromise recovery. 📱 OAuth App Consent Investigation How to check for and revoke malicious OAuth app consents — a common attacker persistence technique. Why this matters: Attackers often trick users into granting OAuth permissions to malicious apps, or they add app consents during account compromise. These app permissions survive password resets and session revocations — they're one of the most persistent backdoor techniques. Checking OAuth App Consents 1 Navigate to the user's app consents Entra ID → Users → select the user → Applications → Application consents (https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/manage-application-permissions) . 2 Review each consented app Look for apps the user doesn't recognize or that were consented recently (during the compromise window). Red flags: apps with names like \"Security Update,\" \"Microsoft Support,\" or generic names. Check the permissions granted — Mail.ReadWrite , Files.ReadWrite.All , User.ReadWrite are high-risk. 3 Revoke suspicious consents Select the suspicious app → click Revoke . This immediately removes the app's access to the user's data. L1 Checklist for OAuth: During any account compromise, always check app consents — even if you've already reset the password and revoked sessions. If you find suspicious apps, document the app name, client ID, permissions granted, and consent timestamp in your investigation notes. 📧 Mail Forwarding & Inbox Rule Investigation Attackers commonly set up mail forwarding rules to exfiltrate email data. These rules survive password resets and session revocations — you must check and remove them explicitly during every account compromise. Why this matters: Even after you've blocked the account, reset the password, and revoked MFA, an SMTP forwarding rule continues silently sending copies of all incoming mail to the attacker's external address. This is one of the most overlooked persistence mechanisms. Three Places to Check for Mail Forwarding 1 SMTP Forwarding (transport-level) Where: Exchange Admin Center → Recipients → Mailboxes (https://learn.microsoft.com/en-us/exchange/recipients-in-exchange-online/manage-user-mailboxes/email-forwarding) → select the user → Mail flow settings → Email forwarding . What to look for: Any forwarding address set, especially to an external domain. This forwards at the transport level — the user doesn't see it in their Outlook rules. Action: If forwarding to an external address is set and the user didn't configure it → remove immediately and document the destination address. 2 Inbox Rules (client-level) Where: Exchange Admin Center → select the user's mailbox → Mailbox features → Mail flow rules . Or via the Purview Audit Log (https://learn.microsoft.com/en-us/purview/audit-search) → search for Activity = \"New-InboxRule.\" What to look for: Rules that forward or redirect mail to external addresses. Rules that move security notifications to deleted items or RSS feeds (hiding them from the user). Rules that mark incoming mail as read (so the user doesn't notice attacker actions). Action: Delete all unauthorized rules. Document rule names, conditions, and destination addresses. 3 Mailbox Delegate Permissions Where: Exchange Admin Center → select the user's mailbox → Delegation . What to look for:",
+                "Type": "DataverseSearch",
+                "Url": ""
+              },
+              {
+                "FileType": "",
+                "IconUrl": "",
+                "Name": "Stopping Compromised Access After MFA: A Taxonomy of Containment Gaps ...",
+                "SourceId": "a85c55ba-48c1-436d-8348-90dc48b39d2d",
+                "Text": "Stopping Compromised Access After MFA: A Taxonomy of Containment Gaps and Controls - ISJEM Journal Notification Announcement! ISJEM Invites papers for various areas like engineering, Management, Science & other multi discplinary subjects. Please submit your paper for review. ISJEM assigns a digital object identifier (DOI) to each published paper, making it easier for the paper to be cited in various major databases like Google Scholar, ResearchGate, Academia.edu, etc… ISJEM takes 24–48 hours to publish a research paper. Within 24 hours, the submitted paper will be reviewed and notified of its status, and it will be published once the processing fee is successfully received. Stopping Compromised Access After MFA: A Taxonomy of Containment Gaps and Controls File Size 395.03 KB Downloads 7 Files 1 Published 22 April 2026 Updated 22 April 2026 Stopping Compromised Access After MFA: A Taxonomy of Containment Gaps and Controls Sudheer Avula Independent Researcher Provo, Utah, U.S.A. sudheer.avula@gmail.com Abstract Multi-factor authentication (MFA) is widely used to strengthen account access, yet it does not by itself ensure rapid containment once authentication has succeeded. In modern authentication environments, especially enterprise and federated deployments, compromised access may persist across application sessions, identity provider sessions, access and refresh tokens, and remembered trust state. This fragmentation makes post-authentication containment a multi-layer problem rather than a single revocation event. This paper defines the post-authentication containment problem and presents a taxonomy of containment gaps and controls in MFA-protected systems. The taxonomy organizes incident classes and containment mechanisms across session, token, trust-state, and credential layers, and highlights where current controls remain partial, delayed, or dependent on product-specific integration. The paper further identifies user-driven deauthorization as an underdeveloped but potentially valuable containment capability. By clarifying this design space, the paper aims to inform future authentication architecture and support more systematic incident response. Keywords: Multi-factor authentication; post-authentication containment; session revocation; token revocation; federated identity; identity and access management; user-driven deauthorization; incident response Download Similar Downloads No related download found! ISJEM Journal Updated 22 April 2026",
+                "Type": "AzoresBingUnscopedSearch",
+                "Url": "https://isjem.com/download/stopping-compromised-access-after-mfa-a-taxonomy-of-containment-gaps-and-controls/"
+              },
+              {
+                "FileType": "",
+                "IconUrl": "",
+                "Name": "Harris_Health_Microsoft_Entra_ID_SOP.html",
+                "SourceId": "3cc5cca6-4cd7-4569-aefa-88eb7b4dd22e",
+                "Text": "JIT admin role activations — who elevated to which admin role, when, and for how long (E5 only). L1 Action: Check during compromise investigation to see if the attacker activated any admin roles. 🔍 Sign-in Log Investigation Step-by-step guide to investigating suspicious sign-in activity — the most common L1 identity task. Step-by-Step: Investigating a Suspicious Sign-in 1 Open the sign-in logs and filter to the user Go to Monitoring & health → Sign-in logs . Add filter: User = the UPN of the user you're investigating. Set the date range to cover the suspicious period (usually last 7 days). 2 Check for failed sign-ins (brute force) Filter by Status = Failure . Look for: many failed attempts from the same IP, failed attempts from multiple IPs (password spray), or failures followed by a success (credential compromise). Note the source IPs and failure reasons. 3 Check for impossible travel Filter by Status = Success . Look at the Location column. Two successful sign-ins from geographically distant locations within a short time = impossible travel. Check if VPN or Cisco Secure Access was used (may explain the location difference). 4 Check MFA details Click on a specific sign-in → Authentication Details tab. Check: Was MFA required? Was it satisfied? What method was used (phone, authenticator, FIDO2)? Multiple unexpected MFA prompts = MFA fatigue attack. 5 Check Conditional Access results Click on the sign-in → Conditional Access tab. Check which policies were evaluated and their results (Success, Failure, Not Applied). If a policy that should have blocked the sign-in shows \"Not Applied,\" there may be a CA gap. 6 Make your verdict If you find unauthorized successful sign-ins → follow the Account Compromise playbook in the Triage Decision Tree (force password reset, revoke sessions, escalate to L2). If only failed attempts with no success → monitor but no containment needed yet. Pro Tip: Copy the Request ID and Correlation ID from any suspicious sign-in. These unique identifiers let L2 and Microsoft support trace the exact authentication flow if deeper investigation is needed. 🔒 Account Containment Actions How to perform the four critical containment actions during an account compromise. The order depends on whether MFA has been compromised. Compliance-Reported Compromise (password known + MFA changed): When Compliance notifies you that a user's password is exposed AND the attacker has changed the MFA, the attacker has full account control. Use the Block-First Order below — a standard password-first approach will fail because the attacker can re-authenticate with their own MFA device. Containment Order: MFA Compromised (Block-First) 1 BLOCK sign-in immediately Entra ID → Users → select user → Edit properties → Block sign-in = Yes (https://learn.microsoft.com/en-us/entra/fundamentals/how-to-manage-user-profile-info) . This completely prevents all new authentications. Do this FIRST when the attacker has MFA control — if you only reset the password, the attacker can re-authenticate using their registered MFA device. 2 Revoke all sessions Click Revoke sessions (https://learn.microsoft.com/en-us/entra/identity/users/users-revoke-access) . Invalidates all refresh tokens. Existing access tokens expire within ~1 hour. 3 Force password reset Click Reset password (https://learn.microsoft.com/en-us/entra/fundamentals/users-reset-password-azure-portal) . Set a strong temporary password. Check \"Require change on next sign-in.\" Do NOT email the new password — the mailbox is compromised. Deliver by phone call or in person only. 4 Require MFA re-registration Go to Authentication methods → click \"Require re-register multifactor authentication.\" This wipes ALL registered MFA methods — including whatever the attacker added. The user will need to set up MFA from scratch when the account is re-enabled. 5 Check all persistence mechanisms After containment, immediately check: OAuth app consents (see OAuth section), mail forwarding rules (see Mail Forwarding section), inbox rules , and mailbox delegates . These survive all containment actions and must be explicitly removed. Containment Order: MFA Intact (Standard) 1 Force password reset Click Reset password (https://learn.microsoft.com/en-us/entra/fundamentals/users-reset-password-azure-portal) . This is safe to do first when MFA is intact — the attacker can't re-authenticate without the user's MFA device. 2 Revoke all sessions Click Revoke sessions (https://learn.microsoft.com/en-us/entra/identity/users/users-revoke-access) . 3 Block sign-in (if active attacker observed) Click Edit properties → Block sign-in = Yes (https://learn.microsoft.com/en-us/entra/fundamentals/how-to-manage-user-profile-info)",
+                "Type": "DataverseSearch",
+                "Url": ""
+              },
+              {
+                "FileType": "",
+                "IconUrl": "",
+                "Name": "How to Investigate an M365 Identity Compromise from Sign-in Logs to ...",
+                "SourceId": "a85c55ba-48c1-436d-8348-90dc48b39d2d",
+                "Text": "How to Investigate an M365 Identity Compromise from Sign-in Logs to Containment | Ridgeline Cyber Defence ← Back to Blog How to Investigate an M365 Identity Compromise from Sign-in Logs to Containment 3 May 2026 Incident Response & Investigation 10 min read IDENTITY COMPROMISE INVESTIGATION — THE FOUR-STEP SEQUENCE 1. HOW DID THEY GET IN? SigninLogs Attack method, source IP, CA evaluation, MFA status 2. WHAT DID THEY DO? AuditLogs + OfficeActivity MFA registration, rules, OAuth grants, data access 3. HOW DO THEY PERSIST? AuditLogs + ServicePrincipal New MFA methods, OAuth apps, device registration, forwarding 4. CONTAIN Revoke all persistence Sessions, MFA, OAuth, devices, mailbox rules THE MISTAKE THAT CAUSES RE-COMPROMISE Most teams do step 4 first — reset the password, revoke the session, close the ticket. The attacker re-authenticates with their own MFA method or OAuth app within hours. A user reports a suspicious email. Or Defender fires an alert for a risky sign-in. Or — more likely — someone in finance asks why the CEO sent them a wire transfer request from a Gmail address at 2am. The investigation always starts in the same place: the Entra ID sign-in logs. Not because that's where the most evidence is, but because the sign-in log answers the question that determines everything else — how did the attacker authenticate, and why did your security controls let them in? Step 1: Identify the compromise sign-in The sign-in log records every authentication attempt with the source IP, device details, application accessed, Conditional Access evaluation result, MFA status, and risk score. Your first query establishes the timeline. SigninLogs | where TimeGenerated > ago(7d) | where UserPrincipalName == \"compromised.user@contoso.com\" | where ResultType == 0 | project TimeGenerated, IPAddress, Location = tostring(LocationDetails.city), AppDisplayName, AuthenticationRequirement, ConditionalAccessStatus, DeviceDetail, RiskLevelDuringSignIn, UserAgent | sort by TimeGenerated asc You're looking for the transition point — the first successful sign-in from an unfamiliar IP or with an unfamiliar user agent. Everything before that is the legitimate user. Everything from that point forward is the investigation window. Three fields tell you the attack method immediately. If AuthenticationRequirement shows MFA was satisfied from an attacker IP, you're dealing with AiTM phishing or token theft — the attacker intercepted or replayed a valid session. If MFA was not required, Conditional Access has a gap. If MFA failed repeatedly and then succeeded, that's MFA fatigue — the user approved the push after being bombarded. The ConditionalAccessStatus field is equally important. If it shows \"success\" for the attacker's sign-in, your Conditional Access policies evaluated the sign-in and passed it. That's a policy design failure you need to fix after containment. If it shows \"notApplied,\" no policy matched at all — which means the application or conditions weren't covered by any policy. Step 2: Map the post-compromise activity Once you've identified the compromise window, you need to know what the attacker did with the access. The three tables that answer this are AuditLogs, OfficeActivity, and CloudAppEvents. AuditLogs | where TimeGenerated > ago(7d) | where InitiatedBy.user.userPrincipalName == \"compromised.user@contoso.com\" or TargetResources[0].userPrincipalName == \"compromised.user@contoso.com\" | project TimeGenerated, OperationName, Category, Result, Target = tostring( TargetResources[0].displayName), ModifiedProps = tostring( TargetResources[0].modifiedProperties) | sort by TimeGenerated asc This query returns every administrative action the compromised account performed — MFA method registration, device registration, application consent, group membership changes, role assignments, and password resets. Each operation has an investigation significance. AUDIT LOG OPERATIONS — INVESTIGATION SIGNIFICANCE PERSISTENCE MFA registration, device enroll, OAuth PRIVILEGE ESCALATION Role assignment, group add, PIM activation RECONNAISSANCE Directory reads, group enumeration DATA ACCESS Mail read, file download, Teams access EVASION Inbox rules, forwarding, log suppression LATERAL MOVEMENT Internal phishing, consent on behalf of Each operation tells you what the attacker was trying to achieve — and what you need to revoke. The most critical operations to look for in the first pass: \"User registered security info\" (new MFA method — the attacker's persistence), \"Consent to application\" (OAuth persistence), \"Add registered owner to device\" or \"Register device\" (device registration — bypasses Conditional Access device compliance policies), and \"New-InboxRule\" or \"Set-Mailbox\" with ForwardingSmtpAddress (email forwarding — the BEC setup). Step 3: Find all persistence mechanisms This is the step most teams skip. They see the compromise, reset the password, revoke sessions, and close the ticket. The attacker re-authenticates the next morning using the MFA method they registered during the 30 minutes they had access. Every persistence mechanism must be enumerated before containment. Miss one and the attacker returns. // MFA methods registered during the compromise window AuditLogs | where TimeGenerated between (datetime(2026-05-01T08:00:00Z) .. datetime(2026-05-01T12:00:00Z)) | where OperationName has_any (\"authentication method\", \"registered security info\", \"strongAuthenticationPhoneAppDetail\") | where TargetResources[0].userPrincipalName == \"compromised.user@contoso.com\" or InitiatedBy.user.userPrincipalName == \"compromised.user@contoso.com\" | project TimeGenerated, OperationName, AdditionalDetails Run the same pattern for device registrations, OAuth consent grants, and mailbox rules. Each one is a separate persistence channel that survives a password reset. Persistence type Survives password reset? Survives session revoke? Where to check MFA method registration Yes Yes AuditLogs OAuth application consent Yes Yes AuditLogs + ServicePrincipalSignInLogs Device registration Yes Yes AuditLogs + Device management Mailbox forwarding rule Yes Yes OfficeActivity Inbox rules Yes Yes OfficeActivity Every row in that table is a \"yes\" to both questions. That's why a password reset alone doesn't contain an identity compromise — it only removes the original access method while leaving all the persistence the attacker established during their session. Step 4: Contain — in the right order Containment for identity compromise has a specific sequence. Do it out of order and you alert the attacker before you've removed their persistence. First, revoke all active sessions (Revoke-AzureADUserAllRefreshToken or the Entra admin portal). This kills the current session but does not prevent re-authentication. Second, remove every MFA method the attacker registered. Check the Authentication Methods blade in Entra — any method added during the compromise window gets deleted. Third, remove any devices registered during the compromise window. An attacker-registered device that shows as \"Entra AD registered\" will satisfy Conditional Access policies requiring device registration. Fourth, revoke OAuth application consent for any applications granted during the compromise window. Check both user consent and admin consent grants. If the application has been authenticating independently (check AADServicePrincipalSignInLogs), it has its own credentials and will continue accessing data regardless of what you do to the user account. Fifth, remove mailbox rules — forwarding rules, inbox rules that move or delete messages, and any SMTP forwarding configured at the mailbox level. Sixth — now you reset the password. Not before. Every step above removes a persistence mechanism that would let the attacker re-authenticate after the reset. The query you should run right now Before you encounter your next identity compromise, run this on your own tenant to understand your baseline: AuditLogs | where TimeGenerated > ago(30d) | where OperationName has_any (\"Consent to application\", \"registered security info\", \"Register device\", \"Add registered owner\") | summarize Count = count() by OperationName, bin(TimeGenerated, 1d) | render timechart This shows you the daily volume of persistence-class operations in your tenant. When a compromise happens, you'll know whether 3 new MFA registrations in a day is normal or an anomaly. Without that baseline, every investigation starts with the question \"is this normal?\" instead of \"this is anomalous, here's why.\" The Entra ID Security course walks through the complete identity threat landscape — every attack pattern, the defense that stops it, and the detection that catches it. The Practical Incident Response course covers the full identity compromise investigation methodology in IR8, including AiTM phishing, OAuth consent attacks, and the persistence analysis that determines containment scope. Both courses start with free modules — no account required. What to do this week Run the baseline query above on your tenant. Save the output. You'll need it when the next alert fires. Check your Conditional Access policies for the gap that appears most often in investigations: policies that require MFA but accept \"registered\" devices instead of \"compliant\" devices. An attacker who registers their own device satisfies \"registered\" instantly. Verify that your IR runbook includes the six-step containment sequence — session revoke, MFA cleanup, device removal, OAuth revocation, mailbox rule removal, then password reset. If your runbook says \"reset password and revoke sessions,\" it's missing four steps. Review the last three identity-related incidents your SOC handled. Were all persistence mechanisms checked? If the tickets were closed after a password reset, you may have unresolved persistence in your tenant right now. Next week: Endpoint security baselines — what to harden before you deploy EDR. Ridgeline Cyber Defence Written by security practitioners. Published weekly on Tuesdays.…",
+                "Type": "AzoresBingUnscopedSearch",
+                "Url": "https://training.ridgelinecyber.com/blog/m365-identity-compromise-investigation/"
+              }
+            ]
+          }
+        },
+        "planUsedOutputs": {},
+        "planIdentifier": "e37d0c61-d944-478e-9ec2-f2da7cecfebc",
+        "state": "completed",
+        "hasRecommendations": false,
+        "executionTime": "00:00:01.0344175"
+      }
+    },
+    {
+      "valueType": "KnowledgeTraceData",
+      "id": "e69d93a36dc4443fb64a7f8c05a99df8",
+      "type": "trace",
+      "timestamp": 1778773470,
+      "timestampMs": 1778773470031,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "replyToId": "5276190d-b8bd-43e3-ab7c-d2cbbfcef9aa",
+      "value": {
+        "completionState": "Answered",
+        "isKnowledgeSearched": true,
+        "citedKnowledgeSources": [],
+        "failedKnowledgeSourcesTypes": []
+      }
+    },
+    {
+      "id": "1ce3a395-ec04-4e19-a573-6fdbaba2068a",
+      "type": "message",
+      "timestamp": 1778773470,
+      "timestampMs": 1778773470027,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "channelId": "pva-studio",
+      "textFormat": "markdown",
+      "text": "## 🔐 Containment Sequences: MFA Compromised (Block-First) vs. MFA Intact (Standard)\n\nHere is a detailed breakdown of both sequences, the step-by-step order, and the **rationale** behind each.\n\n---\n\n### 🔴 Sequence 1: MFA Compromised (Block-First)\n\n> **Trigger:** Compliance notifies you that the user's password is exposed **AND** the attacker has changed or added their own MFA method.\n\nWhen the attacker has full account control (both password and MFA), a standard password-first approach will fail because the attacker can re-authenticate with their own MFA device.[1]\n\n| Step | Action | Rationale |\n|------|--------|-----------|\n| **1** | **Block sign-in immediately** (Entra ID → Users → Edit Properties → Block sign-in = Yes) | This completely prevents all new authentications. Do this FIRST when the attacker has MFA control — if you only reset the password, the attacker can re-authenticate using their registered MFA device.[1] |\n| **2** | **Revoke all sessions** | Invalidates all refresh tokens. Existing access tokens expire within ~1 hour.[1] |\n| **3** | **Force password reset** | Set a strong temporary password. Check \"Require change on next sign-in.\" Do NOT email the new password — the mailbox is compromised. Deliver by phone call or in person only.[1] |\n| **4** | **Require MFA re-registration** | Go to Authentication methods → click \"Require re-register multifactor authentication.\" This wipes ALL registered MFA methods — including whatever the attacker added. The user will need to set up MFA from scratch when the account is re-enabled.[1] |\n| **5** | **Check all persistence mechanisms** | After containment, immediately check: OAuth app consents, mail forwarding rules, inbox rules, and mailbox delegates. These survive all containment actions and must be explicitly removed.[1] |\n\n---\n\n### 🟡 Sequence 2: MFA Intact (Standard)\n\n> **Trigger:** Password is known/compromised, but MFA has **not** been changed by the attacker.\n\n| Step | Action | Rationale |\n|------|--------|-----------|\n| **1** | **Force password reset** | This is safe to do first when MFA is intact — the attacker can't re-authenticate without the user's MFA device.[1] |\n| **2** | **Revoke all sessions** | Invalidates all active refresh tokens and kills existing sessions. |\n| **3** | **Block sign-in** *(if active attacker observed)* | Block sign-in = Yes — use when you observe active attacker activity: mail forwarding rules, lateral movement, or data exfiltration.[1] |\n| **4** | **Require MFA re-registration** *(recommended)* | Even when MFA appears intact, require re-registration as a precaution. The attacker may have added a secondary device you haven't noticed yet.[2] |\n\n---\n\n### 🧠 The Core Rationale: Why Does Order Matter?\n\nThe key decision point is **who controls MFA**:\n\n| Condition | Why it changes the order |\n|-----------|--------------------------|\n| **Attacker controls MFA** | Resetting the password first gives the attacker a window to re-authenticate using *their* registered MFA device before you can block them. **Block must come first** to shut the door entirely. |\n| **MFA is intact (user controls it)** | The attacker cannot pass MFA, so resetting the password is safe to do first. A sign-in block is only needed if active lateral movement or exfiltration is observed. |\n\n> ⚠️ **Escalate if:** You find evidence of admin role activation, lateral movement to other accounts, or OAuth app consents granted during the compromise window — these require **L2 escalation** and broader tenant-level investigation.\n\n---\n\n### 📋 Artifacts to Capture\n- Screenshot of the blocked account status\n- Timestamp of each containment action taken\n- List of any rogue MFA methods found and removed\n- Any suspicious OAuth apps, mail forwarding rules, or inbox rules discovered\n- Incident ticket number tied to all actions\n\n[1]: cite:1 \"Citation-1\"\n[2]: cite:2 \"Citation-2\"",
+      "attachments": [],
+      "replyToId": "5276190d-b8bd-43e3-ab7c-d2cbbfcef9aa",
+      "channelData": {
+        "feedbackLoop": {
+          "type": "default"
+        }
+      }
+    },
+    {
+      "valueType": "DynamicPlanFinished",
+      "id": "561c9b7e-2079-4047-9784-9564c65e4c4e",
+      "type": "event",
+      "timestamp": 1778773470,
+      "timestampMs": 1778773470030,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "name": "DynamicPlanFinished",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "5276190d-b8bd-43e3-ab7c-d2cbbfcef9aa",
+      "value": {
+        "planId": "e37d0c61-d944-478e-9ec2-f2da7cecfebc"
+      }
+    },
+    {
+      "id": "5f720240-6707-4b5b-937f-002f3f3759ce",
+      "type": "message",
+      "timestamp": 1778773506,
+      "timestampMs": 1778773506569,
+      "from": {
+        "id": "e46116d6-326b-4879-1c57-509352eaf550",
+        "aadObjectId": "f7a5eb8f-85f6-4851-8c71-5f40cdc9145a",
+        "role": 1
+      },
+      "channelId": "pva-studio",
+      "textFormat": "plain",
+      "text": "What is the top rule when dealing with medical devices?",
+      "attachments": [],
+      "channelData": {
+        "attachmentSizes": [],
+        "enableDiagnostics": true,
+        "testMode": "Text",
+        "clientActivityID": "g76m38v7izw"
+      }
+    },
+    {
+      "valueType": "DynamicPlanReceived",
+      "id": "e1957cef-96a1-45be-8c82-8f13079346f3",
+      "type": "event",
+      "timestamp": 1778773510,
+      "timestampMs": 1778773510832,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "name": "DynamicPlanReceived",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "5f720240-6707-4b5b-937f-002f3f3759ce",
+      "value": {
+        "steps": [
+          "P:UniversalSearchTool"
+        ],
+        "isFinalPlan": false,
+        "planIdentifier": "a7fb6fb4-0311-4d96-9950-5d5f5849d491"
+      }
+    },
+    {
+      "id": "f67248bd-495e-4983-b6c2-ed5f4ecf8410",
+      "type": "event",
+      "timestamp": 1778773510,
+      "timestampMs": 1778773510832,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "name": "DynamicPlanReceivedDebug",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "5f720240-6707-4b5b-937f-002f3f3759ce",
+      "value": {
+        "summary": "",
+        "ask": "What is the top rule when dealing with medical devices?",
+        "planIdentifier": "a7fb6fb4-0311-4d96-9950-5d5f5849d491",
+        "isFinalPlan": false
+      }
+    },
+    {
+      "valueType": "DynamicPlanStepTriggered",
+      "id": "8eefad0c-2746-428a-9dd3-1a1e6cda1791",
+      "type": "event",
+      "timestamp": 1778773510,
+      "timestampMs": 1778773510835,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "name": "DynamicPlanStepTriggered",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "5f720240-6707-4b5b-937f-002f3f3759ce",
+      "value": {
+        "planIdentifier": "a7fb6fb4-0311-4d96-9950-5d5f5849d491",
+        "stepId": "c335248a-8a03-4ca8-82b2-e38ed28643ee",
+        "taskDialogId": "P:UniversalSearchTool",
+        "thought": "The user is asking about the top rule when dealing with medical devices. Let me search the SOPs for this information.",
+        "state": 1,
+        "hasRecommendations": false,
+        "type": "KnowledgeSource"
+      }
+    },
+    {
+      "id": "21d221ab-0372-464f-aea4-96bf0e753c64",
+      "type": "event",
+      "timestamp": 1778773510,
+      "timestampMs": 1778773510844,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "name": "DynamicPlanStepBindUpdate",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "5f720240-6707-4b5b-937f-002f3f3759ce",
+      "value": {
+        "taskDialogId": "P:UniversalSearchTool",
+        "stepId": "c335248a-8a03-4ca8-82b2-e38ed28643ee",
+        "arguments": {
+          "enable_summarization": false,
+          "search_keywords": "medical devices, top rule, security, SOC, SOP",
+          "search_query": "What is the top rule when dealing with medical devices?"
+        },
+        "planIdentifier": "a7fb6fb4-0311-4d96-9950-5d5f5849d491",
+        "autoFilledArguments": [
+          "search_keywords",
+          "search_query"
+        ]
+      }
+    },
+    {
+      "id": "d91e50f7-34a6-4deb-9aa5-3a2a90aceb5f",
+      "type": "event",
+      "timestamp": 1778773511,
+      "timestampMs": 1778773511973,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "name": "UniversalSearchToolTraceData",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "5f720240-6707-4b5b-937f-002f3f3759ce",
+      "value": {
+        "toolId": "P:UniversalSearchTool",
+        "knowledgeSources": [
+          "BingUnscopedSearchKnowledge",
+          "craa5_agenthiQ4p0.file.Harris_Health_Microsoft_Entra_ID_SOP.html_OX-",
+          "craa5_agenthiQ4p0.file.Harris_Health_ORDR_Medical_Devices_SOP.html_N_9",
+          "craa5_agenthiQ4p0.file.Harris_Health_Rapid7_InsightVM_SOP.html__u8",
+          "craa5_agenthiQ4p0.file.Harris_Health_Radware_AppWall_SOP.html_02J",
+          "craa5_agenthiQ4p0.file.Harris_Health_CrowdStrike_Falcon_SOP.html_JDN",
+          "craa5_agenthiQ4p0.file.Harris_Health_Radware_DefensePro_SOP.html_7m8",
+          "craa5_agenthiQ4p0.file.Harris_Health_Microsoft_Purview_SOP.html_Mmr"
+        ],
+        "outputKnowledgeSources": [
+          "craa5_agenthiQ4p0.file.Harris_Health_ORDR_Medical_Devices_SOP.html_N_9",
+          "BingUnscopedSearchKnowledge"
+        ],
+        "fullResults": [],
+        "filteredResults": [],
+        "searchErrors": []
+      }
+    },
+    {
+      "id": "66ed0948-e6e9-4ba0-a69d-1dee4832b97b",
+      "type": "event",
+      "timestamp": 1778773511,
+      "timestampMs": 1778773511983,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "name": "DynamicPlanStepFinished",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "5f720240-6707-4b5b-937f-002f3f3759ce",
+      "value": {
+        "taskDialogId": "P:UniversalSearchTool",
+        "stepId": "c335248a-8a03-4ca8-82b2-e38ed28643ee",
+        "observation": {
+          "downloaded_files": null,
+          "search_result": {
+            "search_errors": [],
+            "search_results": [
+              {
+                "FileType": "",
+                "IconUrl": "",
+                "Name": "Harris_Health_ORDR_Medical_Devices_SOP.html",
+                "SourceId": "96fdb497-ef8e-4f48-a9d7-dbe19869dc9a",
+                "Text": "Known false positive patterns in ORDR alerts. <table><thead><tr><th>FP Pattern</th><th>Common Cause</th><th>How to Verify</th></tr></thead><tbody> <tr><td>Anomalous communication to new vendor cloud endpoint</td><td>Device vendor updated their cloud service IP addresses (common with cloud-connected medical devices)</td><td>Check with Clinical Engineering / vendor. If vendor confirms new endpoint → update ORDR baseline.</td></tr> <tr><td>New device alert for a relocated device</td><td>A known device was physically moved to a different VLAN or clinic site</td><td>Check with Clinical Engineering. If device was relocated → update ORDR inventory and close alert.</td></tr> <tr><td>Communication policy violation after network change</td><td>Network infrastructure change (VLAN restructure, firewall rule update) altered the device's traffic path</td><td>Check with Network Ops for recent network changes. If change is authorized → update segmentation policy.</td></tr> </tbody></table> Harris Health System — InfoSec Confidential | ORDR Medical Devices SOC L1 SOP v1.0 | Last updated: March 2026 function showPanel(id) { document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'); document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'); const panel = document.getElementById('panel-' + id); if (panel) panel.classList.add('active'); const btn = document.querySelector('[data-panel=\"' + id + '\"]'); if (btn) btn.classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }",
+                "Type": "DataverseSearch",
+                "Url": ""
+              },
+              {
+                "FileType": "",
+                "IconUrl": "",
+                "Name": "Overview of Device Regulation | FDA",
+                "SourceId": "a85c55ba-48c1-436d-8348-90dc48b39d2d",
+                "Text": "Overview of Device Regulation | FDA Home Medical Devices Device Advice: Comprehensive Regulatory Assistance Overview of Device Regulation Overview of Device Regulation Update: February 2, 2026 The Quality Management System Regulation (QMSR), became effective on, February 2, 2026, amending the device current good manufacturing practice (CGMP) requirements of 21 CFR part 820 and incorporating by reference the international standard specific for medical device quality management systems set by the International Organization for Standardization (ISO), ISO 13485:2016 Medical devices – Quality management systems – Requirements for regulatory purposes. On February 2, 2026, the FDA stopped using the Quality System Inspection Technique (QSIT) for device inspections and began utilizing the inspection process described in the updated Inspection of Medical Device Manufacturers Compliance Program: 7382.850. After February 2, 2026, the FDA will no longer use the following documents: Inspection of Medical Device Manufacturers (7382.845) and Medical Device PMA Preapproval and PMA Postmarket Inspections (7383.001). Introduction The FDA's Center for Devices and Radiological Health (CDRH) is responsible for regulating firms who manufacture, repackage, relabel, and/or import medical devices sold in the United States. In addition, CDRH regulates radiation-emitting electronic products (medical and non-medical) such as lasers, x-ray systems, ultrasound equipment, microwave ovens and color televisions. Radiation-emitting Electronic Products Medical devices are classified into Class I, II, and III. Regulatory control increases from Class I to Class III. The device classification regulation defines the regulatory requirements for a general device type. Most Class I devices are exempt from Premarket Notification 510 (k); most Class II devices require Premarket Notification 510 (k); and most Class III devices require Premarket Approval. A description of device classification and a link to the Product Classification Database is available at \" Classification of Medical Devices.\" The basic regulatory requirements that manufacturers of medical devices distributed in the U.S. must comply with are: Establishment registration, Medical Device Listing, Premarket Notification 510 (k), unless exempt, or Premarket Approval (PMA), Investigational Device Exemption (IDE) for clinical studies Quality Management System Regulation Labeling requirements, and Medical Device Reporting (MDR) Establishment Registration - 21 CFR Part 807 Manufacturers (both domestic and foreign) and initial distributors (importers) of medical devices must register their establishments with the FDA. All establishment registrations must be submitted electronically unless a waiver has been granted by the FDA. All registration information must be verified annually between October 1st and December 31st of each year. In addition to registration, foreign manufacturers must also designate a U.S. Agent. Beginning October 1, 2007, most establishments are required to pay an establishment registration fee. Establishment Registration U.S. Agents Medical Device Listing - 21 CFR Part 807 Manufacturers must list their devices with the FDA. Establishments required to list their devices include: manufacturers, contract manufacturers, contract sterilizers, repackagers and relabelers, specification developers, reprocessors single-use devices, remanufacturer manufacturers of accessories and components sold directly to the end user U.S. manufacturers of \"export only\" devices Medical Device Listing Premarket Notification 510 (k) - 21 CFR Part 807 Subpart E If your device requires the submission of a Premarket Notification 510 (k), you cannot commercially distribute the device until you receive a letter of substantial equivalence from the FDA authorizing you to do so. A 510 (k) must demonstrate that the device is substantially equivalent to one legally in commercial distribution in the United States: (1) before May 28, 1976; or (2) to a device that has been determined by the FDA to be substantially equivalent. Premarket Notification 510 (k) On October 26, 2002 the Medical Device User Fee and Modernization Act of 2002 became law. It authorized the FDA to charge a fee for medical device Premarket Notifcation 510 (k) reviews. A small business may pay a reduced fee. The application fee applies to Traditional, Abbreviated, and Special 510 (k)s. The payment of a premarket review fee is not related in any way to the FDA's final decision on a submission. 510 (k) Review Fees Most Class I devices and some Class II devices are exempt from the Premarket Notification 510 (k) submission. A list of exempt devices is located at: 510 (k) Exempt Devices If you plan to send a 510 (k) application to the FDA for a Class I or Class II device, you may find 510 (k) review by an Accredited Persons beneficial. The FDA accredited 12 organizations to conduct a primary review of 670 types of devices. By law, the FDA must issue a final determination within 30 days after receiving a recommendation from an Accredited Person. Please note that 510 (k) review by an Accredited Person is exempt from any FDA fee; however, the third-party may charge a fee for its review. Third Party Review Premarket Approval (PMA) - 21 CFR Part 814 Product requiring PMAs are Class III devices are high risk devices that pose a significant risk of illness or injury, or devices found not substantially equivalent to Class I and II predicate through the 510 (k) process. The PMA process is more involved and includes the submission of clinical data to support claims made for the device. Premarket Approval Beginning fiscal year 2003 (October 1, 2002 through September 30, 2003), medical device user fees apply to original PMAs and certain types of PMA supplements. Small businesses are eligible for reduced or waived fees. PMA Review Fees Investigational Device Exemption (IDE) - 21 CFR Part 812 An investigational device exemption (IDE) allows the investigational device to be used in a clinical study in order to collect safety and effectiveness data required to support a Premarket Approval (PMA) application or a Premarket Notification 510 (k) submission to the FDA. Clinical studies with devices of significant risk must be approved by the FDA and by an Institutional Review Board (IRB) before the study can begin. Studies with devices of nonsignificant risk must be approved by the IRB only before the study can begin. Investigational Device Exemption Quality Management System Regulation (QMSR) - 21 CFR Part 820 The Quality Management System Regulation (QMSR) includes requirements that govern the methods used in, and the facilities and controls used for the design, manufacture, packaging, labeling, storage, installation and servicing of all finished devices intended for human use. Manufacturing facilities undergo FDA inspections to assure compliance with the QMSR. Quality Management System Regulation Labeling - 21 CFR Part 801 Labeling includes labels on the device as well as descriptive and informational literature that accompanies the device. Labeling Medical Device Reporting - 21 CFR Part 803 Incidents in which a device may have caused or contributed to a death or serious injury must be reported to the FDA under the Medical Device Reporting program. In addition, certain malfunctions must also be reported. The MDR regulation is a mechanism for the FDA and manufacturers to identify and monitor significant adverse events involving medical devices. The goals of the regulation are to detect and correct problems in a timely manner. Medical Device Reporting Additional Information Code of Federal Regulations (CFR) CDRH Freedom of Information (FOI) Reference Sheet Feedback form Was this page helpful? Yes No Device Advice. Overview of regulations for medical devices: premarket notifications (510 (k)), establishment registration, device listing, quality systems, labeling and reporting requirements.",
+                "Type": "AzoresBingUnscopedSearch",
+                "Url": "https://www.fda.gov/medical-devices/device-advice-comprehensive-regulatory-assistance/overview-device-regulation"
+              },
+              {
+                "FileType": "",
+                "IconUrl": "",
+                "Name": "Harris_Health_ORDR_Medical_Devices_SOP.html",
+                "SourceId": "96fdb497-ef8e-4f48-a9d7-dbe19869dc9a",
+                "Text": "ORDR — SOC L1 SOP | Harris Health <img alt=\"Harris Health\" src=\"data:image/png;base64,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\"/> <h1>ORDR — SOC L1 SOP</h1> Harris Health System — Security Operations Center v1.0 — Mar 2026 Sections 🏠 Overview 🖥️ Console Navigation 🔔 Alert Types 🛡️ Compensating Controls 🚫 Common False Positives ORDR — SOC L1 Standard Operating Procedure Harris Health's medical device and IoMT security platform . Discovers, classifies, and monitors ~2,000+ medical devices across 2 hospitals and 32 clinics. Generates segmentation policy recommendations for Cisco FMC. Patient safety is always the top priority — never take actions that could disrupt clinical care. Console Login: ORDR Dashboard (https://ordr.net/platform/) <table><thead><tr><th>Capability</th><th>Harris Health Usage</th></tr></thead><tbody> <tr><td>Device Discovery</td><td>Passively discovers all connected devices on medical VLANs — infusion pumps, imaging systems, patient monitors, lab equipment, HVAC, physical security.</td></tr> <tr><td>Device Classification</td><td>Identifies device type, manufacturer, model, firmware version, clinical function, and FDA class.</td></tr> <tr><td>Vulnerability Mapping</td><td>Maps known CVEs to specific device models. Enriches with device context (can it be patched? is there a vendor fix?).</td></tr> <tr><td>Behavioral Monitoring</td><td>Baselines normal communication patterns for each device and alerts on anomalies (unexpected connections, protocol changes).</td></tr> <tr><td>Segmentation Policy Generation</td><td>Generates recommended network segmentation rules for Cisco FMC based on each device's required communication paths.</td></tr> </tbody></table> CRITICAL RULE — Patient Safety First: NEVER isolate, disable, power off, or modify a medical device without explicit Clinical Engineering approval. These devices may be actively involved in patient care. When in doubt, apply network-level compensating controls (Cisco FMC microsegmentation) instead of device-level actions.",
+                "Type": "DataverseSearch",
+                "Url": ""
+              }
+            ]
+          }
+        },
+        "planUsedOutputs": {},
+        "planIdentifier": "a7fb6fb4-0311-4d96-9950-5d5f5849d491",
+        "state": "completed",
+        "hasRecommendations": false,
+        "executionTime": "00:00:01.1488578"
+      }
+    },
+    {
+      "valueType": "KnowledgeTraceData",
+      "id": "bcd9a8b8ea224714b6ab18abaa9e89ef",
+      "type": "trace",
+      "timestamp": 1778773532,
+      "timestampMs": 1778773532940,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "replyToId": "5f720240-6707-4b5b-937f-002f3f3759ce",
+      "value": {
+        "completionState": "Answered",
+        "isKnowledgeSearched": true,
+        "citedKnowledgeSources": [],
+        "failedKnowledgeSourcesTypes": []
+      }
+    },
+    {
+      "id": "8049cbad-24f5-4f66-8944-8d53a26305cd",
+      "type": "message",
+      "timestamp": 1778773532,
+      "timestampMs": 1778773532937,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "channelId": "pva-studio",
+      "textFormat": "markdown",
+      "text": "## 🏥 Top Rule for Medical Devices: **Patient Safety First**\n\n---\n\n### 🚨 The #1 Critical Rule\n\n**CRITICAL RULE — Patient Safety First:**\n> **NEVER isolate, disable, power off, or modify a medical device without explicit Clinical Engineering approval. These devices may be actively involved in patient care. When in doubt, apply network-level compensating controls (Cisco FMC microsegmentation) instead of device-level actions.**[1]\n\n---\n\n### 🧠 Why This Rule Exists\n\nMedical devices at Harris Health — such as infusion pumps, patient monitors, imaging systems, and lab equipment — are directly tied to patient care. Harris Health's ORDR platform discovers, classifies, and monitors **2,000+ medical devices** across 2 hospitals and 32 clinics.[1] Any disruption to these devices, even with security intent, can have **life-safety consequences**.\n\n---\n\n### ✅ What You Should Do Instead\n\nWhen a medical device is flagged with a security concern, follow this approach:\n\n| ❌ Do NOT | ✅ Instead |\n|-----------|-----------|\n| Isolate the device | Apply **Cisco FMC microsegmentation** at the network level |\n| Disable or power off the device | Consult **Clinical Engineering** before any action |\n| Modify device settings | Document findings and escalate per SOP |\n\n---\n\n### 📞 Escalate If…\n- You need to take **any action on the device itself** → Contact **Clinical Engineering** first and obtain explicit approval.\n- You are unsure whether a device is currently in active patient use → **Assume it is** and escalate immediately.\n\n> ⚠️ **Bottom line for L1 analysts:** Your primary containment tool for medical devices is the **network layer (Cisco FMC)**, not the device itself. Clinical Engineering owns the device — always loop them in.\n\n[1]: cite:1 \"Citation-1\"",
+      "attachments": [],
+      "replyToId": "5f720240-6707-4b5b-937f-002f3f3759ce",
+      "channelData": {
+        "feedbackLoop": {
+          "type": "default"
+        }
+      }
+    },
+    {
+      "valueType": "DynamicPlanFinished",
+      "id": "1ed87cae-6fad-40d2-a57d-b397c0117848",
+      "type": "event",
+      "timestamp": 1778773532,
+      "timestampMs": 1778773532938,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "name": "DynamicPlanFinished",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "5f720240-6707-4b5b-937f-002f3f3759ce",
+      "value": {
+        "planId": "a7fb6fb4-0311-4d96-9950-5d5f5849d491"
+      }
+    },
+    {
+      "valueType": "SessionInfo",
+      "id": "0",
+      "type": "trace",
+      "timestamp": 1778773532,
+      "timestampMs": 1778773532938,
+      "from": {
+        "id": "",
+        "role": 0
+      },
+      "value": {
+        "startTimeUtc": "2026-05-14T15:43:58Z",
+        "endTimeUtc": "2026-05-14T15:45:32Z",
+        "type": "Engaged",
+        "outcome": "Resolved",
+        "turnCount": 4,
+        "impliedSuccess": true,
+        "outcomeReason": "Resolved"
+      }
+    }
+  ]
+}

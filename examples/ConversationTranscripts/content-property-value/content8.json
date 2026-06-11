@@ -1,0 +1,107 @@
+{
+  "activities": [
+    {
+      "valueType": "ConversationInfo",
+      "type": "trace",
+      "timestamp": 1781019805,
+      "timestampMs": 1781019805302,
+      "from": {
+        "id": "",
+        "role": 0
+      },
+      "value": {
+        "lastSessionOutcome": "None",
+        "lastSessionOutcomeReason": "NoError",
+        "isDesignMode": true,
+        "locale": "en-US"
+      }
+    },
+    {
+      "id": "6aa61ca2-3c81-49c6-9d15-43a8b5b501e2",
+      "type": "event",
+      "timestamp": 1781019805,
+      "timestampMs": 1781019805302,
+      "from": {
+        "id": "e46116d6-326b-4879-1c57-509352eaf550",
+        "aadObjectId": "f7a5eb8f-85f6-4851-8c71-5f40cdc9145a",
+        "role": 1
+      },
+      "name": "startConversation",
+      "channelId": "pva-studio",
+      "attachments": []
+    },
+    {
+      "id": "ce04d683-5206-438b-a4d5-dcaed3d4b327",
+      "type": "message",
+      "timestamp": 1781019805,
+      "timestampMs": 1781019805758,
+      "from": {
+        "id": "f9233653-046f-3ddb-f0d3-dc4cc7d2c64f",
+        "role": 0
+      },
+      "channelId": "pva-studio",
+      "textFormat": "markdown",
+      "text": "Hello, I'm Test Agent. How can I help?",
+      "attachments": [],
+      "replyToId": "6aa61ca2-3c81-49c6-9d15-43a8b5b501e2",
+      "speak": "Hello and thank you for calling Test Agent, powered by generative AI. How may I help you today?",
+      "channelData": {
+        "feedbackLoop": {
+          "type": "default"
+        }
+      }
+    },
+    {
+      "id": "fe8c9df7-fd0e-44e3-99a8-a8c9d4fa65ae",
+      "type": "event",
+      "timestamp": 1781019805,
+      "timestampMs": 1781019805758,
+      "from": {
+        "id": "f9233653-046f-3ddb-f0d3-dc4cc7d2c64f",
+        "role": 0
+      },
+      "name": "DialogTracing",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "6aa61ca2-3c81-49c6-9d15-43a8b5b501e2",
+      "value": {
+        "actions": [
+          {
+            "actionId": "sendMessage_M0LuhV",
+            "topicId": "craa5_TestAgent.topic.ConversationStart",
+            "triggerId": "main",
+            "dialogComponentId": "dced45b0-4605-4589-bafa-1036848275d6",
+            "actionType": "SendActivity",
+            "conditionItemExit": [],
+            "variableState": {
+              "dialogState": {},
+              "globalState": {}
+            },
+            "exception": "",
+            "resultTrace": {}
+          }
+        ]
+      }
+    },
+    {
+      "valueType": "SessionInfo",
+      "id": "0",
+      "type": "trace",
+      "timestamp": 1781019805,
+      "timestampMs": 1781019805758,
+      "from": {
+        "id": "",
+        "role": 0
+      },
+      "value": {
+        "startTimeUtc": "2026-06-09T15:43:25Z",
+        "endTimeUtc": "2026-06-09T15:43:25Z",
+        "type": "Unengaged",
+        "outcome": "None",
+        "turnCount": 1,
+        "impliedSuccess": false,
+        "outcomeReason": "NoError"
+      }
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "activities": [
+    {
+      "valueType": "ConversationInfo",
+      "type": "trace",
+      "timestamp": 1781014871,
+      "timestampMs": 1781014871957,
+      "from": {
+        "id": "",
+        "role": 0
+      },
+      "value": {
+        "lastSessionOutcome": "None",
+        "lastSessionOutcomeReason": "NoError",
+        "isDesignMode": true,
+        "locale": "en-US"
+      }
+    },
+    {
+      "id": "be1a1444-c23d-4107-8b51-222aebbb2d8c",
+      "type": "event",
+      "timestamp": 1781014871,
+      "timestampMs": 1781014871957,
+      "from": {
+        "id": "e46116d6-326b-4879-1c57-509352eaf550",
+        "aadObjectId": "f7a5eb8f-85f6-4851-8c71-5f40cdc9145a",
+        "role": 1
+      },
+      "name": "startConversation",
+      "channelId": "pva-studio",
+      "attachments": []
+    },
+    {
+      "id": "05d3a6c4-7f72-4918-8b8e-c1e7e6fda81c",
+      "type": "event",
+      "timestamp": 1781014872,
+      "timestampMs": 1781014872355,
+      "from": {
+        "id": "01cb2c4d-2d5b-bfde-24ca-7d0f70a44b4f",
+        "role": 0
+      },
+      "name": "ProtocolInfo",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "be1a1444-c23d-4107-8b51-222aebbb2d8c",
+      "value": {
+        "endpoint": "subscribe"
+      }
+    },
+    {
+      "id": "ff891b6e-0d88-414f-afac-8fd272b9845b",
+      "type": "message",
+      "timestamp": 1781014872,
+      "timestampMs": 1781014872369,
+      "from": {
+        "id": "01cb2c4d-2d5b-bfde-24ca-7d0f70a44b4f",
+        "role": 0
+      },
+      "channelId": "pva-studio",
+      "textFormat": "markdown",
+      "text": "Hello, I'm 311 Agent. How can I help?",
+      "attachments": [],
+      "replyToId": "be1a1444-c23d-4107-8b51-222aebbb2d8c",
+      "speak": "Hello and thank you for calling 311 Agent, powered by generative AI. How may I help you today?",
+      "channelData": {
+        "feedbackLoop": {
+          "type": "default"
+        }
+      }
+    },
+    {
+      "id": "8993ebd6-c16d-4ab3-a455-d82d3e03eb8f",
+      "type": "event",
+      "timestamp": 1781014872,
+      "timestampMs": 1781014872369,
+      "from": {
+        "id": "01cb2c4d-2d5b-bfde-24ca-7d0f70a44b4f",
+        "role": 0
+      },
+      "name": "DialogTracing",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "be1a1444-c23d-4107-8b51-222aebbb2d8c",
+      "value": {
+        "actions": [
+          {
+            "actionId": "sendMessage_M0LuhV",
+            "topicId": "craa5_agent.topic.ConversationStart",
+            "triggerId": "main",
+            "dialogComponentId": "e35f5d6a-d2b8-4e56-ba74-ed1d00c027e5",
+            "actionType": "SendActivity",
+            "conditionItemExit": [],
+            "variableState": {
+              "dialogState": {},
+              "globalState": {}
+            },
+            "exception": "",
+            "resultTrace": {}
+          }
+        ]
+      }
+    },
+    {
+      "valueType": "SessionInfo",
+      "id": "0",
+      "type": "trace",
+      "timestamp": 1781014872,
+      "timestampMs": 1781014872369,
+      "from": {
+        "id": "",
+        "role": 0
+      },
+      "value": {
+        "startTimeUtc": "2026-06-09T14:21:11Z",
+        "endTimeUtc": "2026-06-09T14:21:12Z",
+        "type": "Unengaged",
+        "outcome": "None",
+        "turnCount": 1,
+        "impliedSuccess": false,
+        "outcomeReason": "NoError"
+      }
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "activities": [
+    {
+      "valueType": "ConversationInfo",
+      "type": "trace",
+      "timestamp": 1778768899,
+      "timestampMs": 1778768899016,
+      "from": {
+        "id": "",
+        "role": 0
+      },
+      "value": {
+        "lastSessionOutcome": "None",
+        "lastSessionOutcomeReason": "NoError",
+        "isDesignMode": true,
+        "locale": "en-US"
+      }
+    },
+    {
+      "id": "d739adbc-16cd-4adb-82af-37cdee951382",
+      "type": "event",
+      "timestamp": 1778768899,
+      "timestampMs": 1778768899016,
+      "from": {
+        "id": "e46116d6-326b-4879-1c57-509352eaf550",
+        "aadObjectId": "f7a5eb8f-85f6-4851-8c71-5f40cdc9145a",
+        "role": 1
+      },
+      "name": "startConversation",
+      "channelId": "pva-studio",
+      "attachments": []
+    },
+    {
+      "id": "49afa441-a39f-4f20-b205-e2d3b68767f4",
+      "type": "message",
+      "timestamp": 1778768899,
+      "timestampMs": 1778768899585,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "channelId": "pva-studio",
+      "textFormat": "markdown",
+      "text": "Hi there! I'm your SOC SOP Assistant. Tell me what you’re working on and I’ll\nwalk you through the approved steps.",
+      "attachments": [],
+      "replyToId": "d739adbc-16cd-4adb-82af-37cdee951382",
+      "speak": "Hello and thank you for calling L1 SOC Agent, powered by generative AI. How may I help you today?",
+      "channelData": {
+        "feedbackLoop": {
+          "type": "default"
+        }
+      }
+    },
+    {
+      "id": "6589ba87-499d-4973-bd30-c40c8c786450",
+      "type": "event",
+      "timestamp": 1778768899,
+      "timestampMs": 1778768899585,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "name": "DialogTracing",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "d739adbc-16cd-4adb-82af-37cdee951382",
+      "value": {
+        "actions": [
+          {
+            "actionId": "sendMessage_M0LuhV",
+            "topicId": "craa5_agenthiQ4p0.topic.ConversationStart",
+            "triggerId": "main",
+            "dialogComponentId": "bb339a5b-1be7-4ef1-be7b-a31950c3be1f",
+            "actionType": "SendActivity",
+            "conditionItemExit": [],
+            "variableState": {
+              "dialogState": {},
+              "globalState": {}
+            },
+            "exception": "",
+            "resultTrace": {}
+          }
+        ]
+      }
+    },
+    {
+      "valueType": "SessionInfo",
+      "id": "0",
+      "type": "trace",
+      "timestamp": 1778768899,
+      "timestampMs": 1778768899585,
+      "from": {
+        "id": "",
+        "role": 0
+      },
+      "value": {
+        "startTimeUtc": "2026-05-14T14:28:19Z",
+        "endTimeUtc": "2026-05-14T14:28:19Z",
+        "type": "Unengaged",
+        "outcome": "None",
+        "turnCount": 1,
+        "impliedSuccess": false,
+        "outcomeReason": "NoError"
+      }
+    }
+  ]
+}

@@ -1,0 +1,166 @@
+{
+  "activities": [
+    {
+      "valueType": "ConversationInfo",
+      "type": "trace",
+      "timestamp": 1781189983,
+      "timestampMs": 1781189983801,
+      "from": {
+        "id": "",
+        "role": 0
+      },
+      "value": {
+        "lastSessionOutcome": "None",
+        "lastSessionOutcomeReason": "NoError",
+        "isDesignMode": true,
+        "locale": "en-US"
+      }
+    },
+    {
+      "id": "89b524f2-616b-47a4-be62-a9695d2f09f9",
+      "type": "event",
+      "timestamp": 1781189983,
+      "timestampMs": 1781189983801,
+      "from": {
+        "id": "e46116d6-326b-4879-1c57-509352eaf550",
+        "aadObjectId": "f7a5eb8f-85f6-4851-8c71-5f40cdc9145a",
+        "role": 1
+      },
+      "name": "startConversation",
+      "channelId": "pva-studio",
+      "attachments": []
+    },
+    {
+      "id": "16e21250-4881-4fad-87a0-4f8599c6c5d0",
+      "type": "message",
+      "timestamp": 1781189984,
+      "timestampMs": 1781189984161,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "channelId": "pva-studio",
+      "textFormat": "markdown",
+      "text": "Hi there! I'm your SOC SOP Assistant. Tell me what you’re working on and I’ll\nwalk you through the approved steps.",
+      "attachments": [],
+      "replyToId": "89b524f2-616b-47a4-be62-a9695d2f09f9",
+      "speak": "Hello and thank you for calling L1 SOC Agent, powered by generative AI. How may I help you today?",
+      "channelData": {
+        "feedbackLoop": {
+          "type": "default"
+        }
+      }
+    },
+    {
+      "id": "d19a87db-7bbf-4bb4-a730-acb9c355601b",
+      "type": "event",
+      "timestamp": 1781189984,
+      "timestampMs": 1781189984161,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "name": "DialogTracing",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "89b524f2-616b-47a4-be62-a9695d2f09f9",
+      "value": {
+        "actions": [
+          {
+            "actionId": "sendMessage_M0LuhV",
+            "topicId": "craa5_agenthiQ4p0.topic.ConversationStart",
+            "triggerId": "main",
+            "dialogComponentId": "bb339a5b-1be7-4ef1-be7b-a31950c3be1f",
+            "actionType": "SendActivity",
+            "conditionItemExit": [],
+            "variableState": {
+              "dialogState": {},
+              "globalState": {}
+            },
+            "exception": "",
+            "resultTrace": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "380e4258-dce9-4acb-80fa-7cd6f0ab6a1c",
+      "type": "message",
+      "timestamp": 1781189996,
+      "timestampMs": 1781189996217,
+      "from": {
+        "id": "e46116d6-326b-4879-1c57-509352eaf550",
+        "aadObjectId": "f7a5eb8f-85f6-4851-8c71-5f40cdc9145a",
+        "role": 1
+      },
+      "channelId": "pva-studio",
+      "textFormat": "plain",
+      "text": "How to tackle a theat?",
+      "attachments": [],
+      "channelData": {
+        "attachmentSizes": [],
+        "enableDiagnostics": true,
+        "testMode": "Text",
+        "clientActivityID": "nxvjobzzo9"
+      }
+    },
+    {
+      "id": "21c6a587-6bd7-4d2c-bb19-63501942c2bf",
+      "type": "message",
+      "timestamp": 1781190004,
+      "timestampMs": 1781190004736,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "channelId": "pva-studio",
+      "textFormat": "markdown",
+      "text": "Great question! Before I walk you through the exact steps, I need a little more context so I can pull the right SOP for you. Could you please clarify:\n\n1. **What type of threat is it?**\n   - (e.g., malware/ransomware, phishing, brute-force login, WAF alert, suspicious user activity, DDoS, data exfiltration, etc.)\n\n2. **Where was it detected / which tool triggered the alert?**\n   - (e.g., Radware WAF, SIEM, EDR/antivirus, email gateway, firewall, manual observation, etc.)\n\n3. **What is the current scope/impact?**\n   - (e.g., single user, single endpoint, multiple systems, a specific application or service)\n\nYour answers will help me pull the **correct approved SOP** and give you precise, step-by-step L1 triage guidance. 🔍",
+      "attachments": [],
+      "replyToId": "380e4258-dce9-4acb-80fa-7cd6f0ab6a1c",
+      "channelData": {
+        "feedbackLoop": {
+          "type": "default"
+        }
+      }
+    },
+    {
+      "valueType": "DynamicPlanFinished",
+      "id": "2c38379a-41d7-48ad-8e2e-45cba31607fe",
+      "type": "event",
+      "timestamp": 1781190004,
+      "timestampMs": 1781190004741,
+      "from": {
+        "id": "3f1995eb-c938-b516-e3b7-a6ba0d818fbf",
+        "role": 0
+      },
+      "name": "DynamicPlanFinished",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "380e4258-dce9-4acb-80fa-7cd6f0ab6a1c",
+      "value": {
+        "planId": "cbbe902a-77a4-410a-9f11-a57fc3ddfc35"
+      }
+    },
+    {
+      "valueType": "SessionInfo",
+      "id": "0",
+      "type": "trace",
+      "timestamp": 1781190004,
+      "timestampMs": 1781190004741,
+      "from": {
+        "id": "",
+        "role": 0
+      },
+      "value": {
+        "startTimeUtc": "2026-06-11T14:59:43Z",
+        "endTimeUtc": "2026-06-11T15:00:04Z",
+        "type": "Unengaged",
+        "outcome": "None",
+        "turnCount": 3,
+        "impliedSuccess": false,
+        "outcomeReason": "NoError"
+      }
+    }
+  ]
+}

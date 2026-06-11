@@ -1,0 +1,107 @@
+{
+  "activities": [
+    {
+      "valueType": "ConversationInfo",
+      "type": "trace",
+      "timestamp": 1779196103,
+      "timestampMs": 1779196103247,
+      "from": {
+        "id": "",
+        "role": 0
+      },
+      "value": {
+        "lastSessionOutcome": "None",
+        "lastSessionOutcomeReason": "NoError",
+        "isDesignMode": true,
+        "locale": "en-US"
+      }
+    },
+    {
+      "id": "80edefff-90dd-4c63-bf9b-d8cec9e4be70",
+      "type": "event",
+      "timestamp": 1779196103,
+      "timestampMs": 1779196103247,
+      "from": {
+        "id": "e46116d6-326b-4879-1c57-509352eaf550",
+        "aadObjectId": "f7a5eb8f-85f6-4851-8c71-5f40cdc9145a",
+        "role": 1
+      },
+      "name": "startConversation",
+      "channelId": "pva-studio",
+      "attachments": []
+    },
+    {
+      "id": "3cbb93ba-a1b3-4fa9-a245-96427320f4db",
+      "type": "message",
+      "timestamp": 1779196103,
+      "timestampMs": 1779196103903,
+      "from": {
+        "id": "89d013e0-bbb0-a396-f984-22a75969249d",
+        "role": 0
+      },
+      "channelId": "pva-studio",
+      "textFormat": "markdown",
+      "text": "Hello, I'm Test CUA. How can I help?",
+      "attachments": [],
+      "replyToId": "80edefff-90dd-4c63-bf9b-d8cec9e4be70",
+      "speak": "Hello and thank you for calling Test CUA, powered by generative AI. How may I help you today?",
+      "channelData": {
+        "feedbackLoop": {
+          "type": "default"
+        }
+      }
+    },
+    {
+      "id": "7d53568b-44a1-4e20-9929-4edf590deb8a",
+      "type": "event",
+      "timestamp": 1779196103,
+      "timestampMs": 1779196103903,
+      "from": {
+        "id": "89d013e0-bbb0-a396-f984-22a75969249d",
+        "role": 0
+      },
+      "name": "DialogTracing",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "80edefff-90dd-4c63-bf9b-d8cec9e4be70",
+      "value": {
+        "actions": [
+          {
+            "actionId": "sendMessage_M0LuhV",
+            "topicId": "craa5_TestCUA.topic.ConversationStart",
+            "triggerId": "main",
+            "dialogComponentId": "59cb272e-20f9-4e05-9510-62d72f7d27de",
+            "actionType": "SendActivity",
+            "conditionItemExit": [],
+            "variableState": {
+              "dialogState": {},
+              "globalState": {}
+            },
+            "exception": "",
+            "resultTrace": {}
+          }
+        ]
+      }
+    },
+    {
+      "valueType": "SessionInfo",
+      "id": "0",
+      "type": "trace",
+      "timestamp": 1779196103,
+      "timestampMs": 1779196103903,
+      "from": {
+        "id": "",
+        "role": 0
+      },
+      "value": {
+        "startTimeUtc": "2026-05-19T13:08:23Z",
+        "endTimeUtc": "2026-05-19T13:08:23Z",
+        "type": "Unengaged",
+        "outcome": "None",
+        "turnCount": 1,
+        "impliedSuccess": false,
+        "outcomeReason": "NoError"
+      }
+    }
+  ]
+}

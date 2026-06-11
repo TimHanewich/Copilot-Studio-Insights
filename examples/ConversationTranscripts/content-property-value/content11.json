@@ -1,0 +1,475 @@
+{
+  "activities": [
+    {
+      "valueType": "ConversationInfo",
+      "type": "trace",
+      "timestamp": 1780669093,
+      "timestampMs": 1780669093677,
+      "from": {
+        "id": "",
+        "role": 0
+      },
+      "value": {
+        "lastSessionOutcome": "Resolved",
+        "lastSessionOutcomeReason": "Resolved",
+        "isDesignMode": true,
+        "locale": "en-US"
+      }
+    },
+    {
+      "id": "81d2d2ba-a3e0-4fe9-b33d-cc110f0370b3",
+      "type": "event",
+      "timestamp": 1780669093,
+      "timestampMs": 1780669093677,
+      "from": {
+        "id": "e46116d6-326b-4879-1c57-509352eaf550",
+        "aadObjectId": "f7a5eb8f-85f6-4851-8c71-5f40cdc9145a",
+        "role": 1
+      },
+      "name": "startConversation",
+      "channelId": "pva-studio",
+      "attachments": []
+    },
+    {
+      "id": "1a7a9371-a53c-496a-b50f-e531e3afff84",
+      "type": "message",
+      "timestamp": 1780669094,
+      "timestampMs": 1780669094339,
+      "from": {
+        "id": "69568786-2d07-9f69-167c-eef69ea20137",
+        "role": 0
+      },
+      "channelId": "pva-studio",
+      "textFormat": "markdown",
+      "text": "Hello, I'm Tims Test Email Agent. How can I help?",
+      "attachments": [],
+      "replyToId": "81d2d2ba-a3e0-4fe9-b33d-cc110f0370b3",
+      "speak": "Hello and thank you for calling Tims Test Email Agent, powered by generative AI. How may I help you today?",
+      "channelData": {
+        "feedbackLoop": {
+          "type": "default"
+        }
+      }
+    },
+    {
+      "id": "2173784b-0031-427e-8942-10eda22ee5c4",
+      "type": "event",
+      "timestamp": 1780669094,
+      "timestampMs": 1780669094339,
+      "from": {
+        "id": "69568786-2d07-9f69-167c-eef69ea20137",
+        "role": 0
+      },
+      "name": "DialogTracing",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "81d2d2ba-a3e0-4fe9-b33d-cc110f0370b3",
+      "value": {
+        "actions": [
+          {
+            "actionId": "sendMessage_M0LuhV",
+            "topicId": "craa5_TimsTestEmailAgent.topic.ConversationStart",
+            "triggerId": "main",
+            "dialogComponentId": "fc4dcc78-afc2-4a6d-991e-9c07a4f07909",
+            "actionType": "SendActivity",
+            "conditionItemExit": [],
+            "variableState": {
+              "dialogState": {},
+              "globalState": {}
+            },
+            "exception": "",
+            "resultTrace": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "9fda95f6-3334-4e1d-9319-a2a2b462f6f1",
+      "type": "message",
+      "timestamp": 1780669175,
+      "timestampMs": 1780669175431,
+      "from": {
+        "id": "e46116d6-326b-4879-1c57-509352eaf550",
+        "aadObjectId": "f7a5eb8f-85f6-4851-8c71-5f40cdc9145a",
+        "role": 1
+      },
+      "channelId": "pva-studio",
+      "textFormat": "plain",
+      "text": "Send an email to timh@microsoft.com\n\nSUbject: testing\n\nBody: testing 123",
+      "attachments": [],
+      "channelData": {
+        "attachmentSizes": [],
+        "enableDiagnostics": true,
+        "testMode": "Text",
+        "clientActivityID": "320yvhpad54"
+      }
+    },
+    {
+      "valueType": "DynamicPlanReceived",
+      "id": "fcbb585d-273f-4885-a358-441514809d30",
+      "type": "event",
+      "timestamp": 1780669183,
+      "timestampMs": 1780669183786,
+      "from": {
+        "id": "69568786-2d07-9f69-167c-eef69ea20137",
+        "role": 0
+      },
+      "name": "DynamicPlanReceived",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "9fda95f6-3334-4e1d-9319-a2a2b462f6f1",
+      "value": {
+        "steps": [
+          "craa5_TimsTestEmailAgent.action.Office365Outlook-SendanemailV2"
+        ],
+        "isFinalPlan": false,
+        "planIdentifier": "6bf61e10-bd75-4ee1-8e41-2a4ed3aa2e06"
+      }
+    },
+    {
+      "id": "c18593e5-75aa-498c-9de8-e7ee68384287",
+      "type": "event",
+      "timestamp": 1780669183,
+      "timestampMs": 1780669183786,
+      "from": {
+        "id": "69568786-2d07-9f69-167c-eef69ea20137",
+        "role": 0
+      },
+      "name": "DynamicPlanReceivedDebug",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "9fda95f6-3334-4e1d-9319-a2a2b462f6f1",
+      "value": {
+        "summary": "",
+        "ask": "Send an email to timh@microsoft.com\n\nSUbject: testing\n\nBody: testing 123",
+        "planIdentifier": "6bf61e10-bd75-4ee1-8e41-2a4ed3aa2e06",
+        "isFinalPlan": false
+      }
+    },
+    {
+      "valueType": "DynamicPlanStepTriggered",
+      "id": "6cb3d4f9-1486-4254-84aa-c7cdf31969ab",
+      "type": "event",
+      "timestamp": 1780669183,
+      "timestampMs": 1780669183790,
+      "from": {
+        "id": "69568786-2d07-9f69-167c-eef69ea20137",
+        "role": 0
+      },
+      "name": "DynamicPlanStepTriggered",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "9fda95f6-3334-4e1d-9319-a2a2b462f6f1",
+      "value": {
+        "planIdentifier": "6bf61e10-bd75-4ee1-8e41-2a4ed3aa2e06",
+        "stepId": "e20b9068-680d-42d5-bc17-e0ec095599ee",
+        "taskDialogId": "craa5_TimsTestEmailAgent.action.Office365Outlook-SendanemailV2",
+        "thought": "The user wants to send an email with specific details provided.Sure! Let me send that email right away.",
+        "state": 1,
+        "hasRecommendations": false,
+        "type": "Action"
+      }
+    },
+    {
+      "id": "1a37e9b0-0010-40a9-9084-7ec9e6c1d9ac",
+      "type": "event",
+      "timestamp": 1780669183,
+      "timestampMs": 1780669183807,
+      "from": {
+        "id": "69568786-2d07-9f69-167c-eef69ea20137",
+        "role": 0
+      },
+      "name": "DynamicPlanStepBindUpdate",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "9fda95f6-3334-4e1d-9319-a2a2b462f6f1",
+      "value": {
+        "taskDialogId": "craa5_TimsTestEmailAgent.action.Office365Outlook-SendanemailV2",
+        "stepId": "e20b9068-680d-42d5-bc17-e0ec095599ee",
+        "arguments": {
+          "Body": "testing 123",
+          "To": "timh@microsoft.com",
+          "Subject": "testing"
+        },
+        "planIdentifier": "6bf61e10-bd75-4ee1-8e41-2a4ed3aa2e06",
+        "autoFilledArguments": [
+          "Body",
+          "To",
+          "Subject"
+        ]
+      }
+    },
+    {
+      "id": "81c31ff4-99b3-47c8-bc44-f0185476781f",
+      "type": "message",
+      "timestamp": 1780669183,
+      "timestampMs": 1780669183936,
+      "from": {
+        "id": "69568786-2d07-9f69-167c-eef69ea20137",
+        "role": 0
+      },
+      "name": "connectors/consentCard",
+      "channelId": "pva-studio",
+      "attachments": [
+        {
+          "contentType": "application/vnd.microsoft.card.adaptive",
+          "content": {
+            "type": "AdaptiveCard",
+            "version": "1.3",
+            "body": [
+              {
+                "type": "TextBlock",
+                "size": "medium",
+                "weight": "bolder",
+                "text": "Connect to continue",
+                "wrap": true
+              },
+              {
+                "type": "TextBlock",
+                "text": "I'll use your credentials to connect and to get the information you're looking for.",
+                "wrap": true
+              },
+              {
+                "type": "ColumnSet",
+                "columns": [
+                  {
+                    "type": "Column",
+                    "width": "auto",
+                    "items": [
+                      {
+                        "type": "Image",
+                        "size": "small",
+                        "url": "https://static.powerapps.com/resource/ppcr/releases/v1.0.1812/1.0.1812.4763/office365/icon.png",
+                        "altText": "Office 365 Outlook"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
+                      {
+                        "type": "TextBlock",
+                        "size": "medium",
+                        "weight": "bolder",
+                        "text": "Office 365 Outlook",
+                        "wrap": true
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "TextBlock",
+                "text": "This connection can:",
+                "wrap": true
+              },
+              {
+                "type": "TextBlock",
+                "id": "truncatedText0",
+                "text": "\r- Send an email (V2)",
+                "wrap": true
+              },
+              {
+                "type": "ColumnSet",
+                "columns": [
+                  {
+                    "type": "Column",
+                    "width": "auto",
+                    "items": [
+                      {
+                        "type": "Image",
+                        "size": "small",
+                        "url": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHZpZXdCb3g9IjAgMCAxMCAxMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNC41IDUuNUM0LjUgNS4yMjM4NiA0LjcyMzg2IDUgNSA1QzUuMjc2MTQgNSA1LjUgNS4yMjM4NiA1LjUgNS41VjdDNS41IDcuMjc2MTQgNS4yNzYxNCA3LjUgNSA3LjVDNC43MjM4NiA3LjUgNC41IDcuMjc2MTQgNC41IDdWNS41Wk01IDIuNzVDNC41ODU3OSAyLjc1IDQuMjUgMy4wODU3OSA0LjI1IDMuNUM0LjI1IDMuOTE0MjEgNC41ODU3OSA0LjI1IDUgNC4yNUM1LjQxNDIxIDQuMjUgNS43NSAzLjkxNDIxIDUuNzUgMy41QzUuNzUgMy4wODU3OSA1LjQxNDIxIDIuNzUgNSAyLjc1Wk0wIDVDMCAyLjIzODU4IDIuMjM4NTggMCA1IDBDNy43NjE0MiAwIDEwIDIuMjM4NTggMTAgNUMxMCA3Ljc2MTQyIDcuNzYxNDIgMTAgNSAxMEMyLjIzODU4IDEwIDAgNy43NjE0MiAwIDVaTTUgMUMyLjc5MDg2IDEgMSAyLjc5MDg2IDEgNUMxIDcuMjA5MTQgMi43OTA4NiA5IDUgOUM3LjIwOTE0IDkgOSA3LjIwOTE0IDkgNUM5IDIuNzkwODYgNy4yMDkxNCAxIDUgMVoiIGZpbGw9IiM0MjQyNDIiLz48L3N2Zz4=",
+                        "width": "15px",
+                        "height": "15px"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
+                      {
+                        "type": "TextBlock",
+                        "isSubtle": true,
+                        "text": "Connecting to other services with your credentials may expose your data to privacy and security risks. Once you connect, we'll remember your settings and use them next time.",
+                        "wrap": true
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "ColumnSet",
+                "columns": [
+                  {
+                    "type": "Column",
+                    "width": "40",
+                    "items": []
+                  },
+                  {
+                    "type": "Column",
+                    "width": "30",
+                    "items": [
+                      {
+                        "type": "ActionSet",
+                        "actions": [
+                          {
+                            "type": "Action.Submit",
+                            "data": {
+                              "action": "Allow",
+                              "id": "submit",
+                              "shouldAwaitUserInput": true
+                            },
+                            "title": "Allow",
+                            "style": "positive"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Column",
+                    "width": "30",
+                    "items": [
+                      {
+                        "type": "ActionSet",
+                        "actions": [
+                          {
+                            "type": "Action.Submit",
+                            "data": {
+                              "action": "Cancel",
+                              "id": "submit",
+                              "shouldAwaitUserInput": true
+                            },
+                            "title": "Cancel"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "replyToId": "9fda95f6-3334-4e1d-9319-a2a2b462f6f1",
+      "channelData": {
+        "feedbackLoop": {
+          "type": "default"
+        }
+      }
+    },
+    {
+      "id": "16476569-2d77-4f9d-b6db-8f18e11aa999",
+      "type": "message",
+      "timestamp": 1780669188,
+      "timestampMs": 1780669188822,
+      "from": {
+        "id": "e46116d6-326b-4879-1c57-509352eaf550",
+        "aadObjectId": "f7a5eb8f-85f6-4851-8c71-5f40cdc9145a",
+        "role": 1
+      },
+      "channelId": "pva-studio",
+      "attachments": [],
+      "value": {
+        "action": "Allow",
+        "id": "submit",
+        "shouldAwaitUserInput": true
+      },
+      "channelData": {
+        "postBack": true,
+        "enableDiagnostics": true,
+        "testMode": "Text",
+        "clientActivityID": "7v7qb9ss2gv"
+      }
+    },
+    {
+      "id": "73750e0b-62ba-4397-acec-fe7c694b64f8",
+      "type": "event",
+      "timestamp": 1780669194,
+      "timestampMs": 1780669194719,
+      "from": {
+        "id": "69568786-2d07-9f69-167c-eef69ea20137",
+        "role": 0
+      },
+      "name": "DynamicPlanStepFinished",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "16476569-2d77-4f9d-b6db-8f18e11aa999",
+      "value": {
+        "taskDialogId": "craa5_TimsTestEmailAgent.action.Office365Outlook-SendanemailV2",
+        "stepId": "e20b9068-680d-42d5-bc17-e0ec095599ee",
+        "observation": {
+          "Response": null
+        },
+        "planUsedOutputs": {},
+        "planIdentifier": "6bf61e10-bd75-4ee1-8e41-2a4ed3aa2e06",
+        "state": "completed",
+        "hasRecommendations": false,
+        "executionTime": "00:00:10.9283301",
+        "displayedCost": 7
+      }
+    },
+    {
+      "id": "16ac6c0c-f155-4f5c-ba72-7774e7e52888",
+      "type": "message",
+      "timestamp": 1780669196,
+      "timestampMs": 1780669196701,
+      "from": {
+        "id": "69568786-2d07-9f69-167c-eef69ea20137",
+        "role": 0
+      },
+      "channelId": "pva-studio",
+      "textFormat": "markdown",
+      "text": "Your email has been sent successfully! Here's a summary of what was sent:\n\n- **To:** timh@microsoft.com\n- **Subject:** testing\n- **Body:** testing 123\n\nIs there anything else I can help you with?",
+      "attachments": [],
+      "replyToId": "16476569-2d77-4f9d-b6db-8f18e11aa999",
+      "channelData": {
+        "feedbackLoop": {
+          "type": "default"
+        }
+      }
+    },
+    {
+      "valueType": "DynamicPlanFinished",
+      "id": "28066f19-209c-4fac-b7f2-f557e69702c7",
+      "type": "event",
+      "timestamp": 1780669196,
+      "timestampMs": 1780669196702,
+      "from": {
+        "id": "69568786-2d07-9f69-167c-eef69ea20137",
+        "role": 0
+      },
+      "name": "DynamicPlanFinished",
+      "channelId": "pva-studio",
+      "attachments": [],
+      "replyToId": "16476569-2d77-4f9d-b6db-8f18e11aa999",
+      "value": {
+        "planId": "6bf61e10-bd75-4ee1-8e41-2a4ed3aa2e06"
+      }
+    },
+    {
+      "valueType": "SessionInfo",
+      "id": "0",
+      "type": "trace",
+      "timestamp": 1780669196,
+      "timestampMs": 1780669196702,
+      "from": {
+        "id": "",
+        "role": 0
+      },
+      "value": {
+        "startTimeUtc": "2026-06-05T14:18:13Z",
+        "endTimeUtc": "2026-06-05T14:19:56Z",
+        "type": "Engaged",
+        "outcome": "Resolved",
+        "turnCount": 5,
+        "impliedSuccess": true,
+        "outcomeReason": "Resolved"
+      }
+    }
+  ]
+}
