@@ -62,7 +62,7 @@
 }
 
 .login-card input {
-  width: min(100%, 420px);
+  width: 75%;
   min-height: 48px;
   border: 1px solid #d1d5db;
   border-radius: 10px;
@@ -70,6 +70,7 @@
   color: #111827;
   background: #ffffff;
   font: inherit;
+  text-align: center;
 }
 
 .login-card input:focus {
@@ -78,7 +79,7 @@
 }
 
 .login-card button {
-  width: min(100%, 420px);
+  width: 75%;
   min-height: 48px;
   border: 0;
   border-radius: 10px;

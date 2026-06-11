@@ -1080,12 +1080,11 @@ function App() {
           onSubmit={handleLogin}
         >
           <h1 id="page-title">Copilot Studio Insights</h1>
-          <label htmlFor="environment-url">Environment URL</label>
           <input
             id="environment-url"
             name="environmentUrl"
             type="url"
-            placeholder="https://your-environment.crm.dynamics.com"
+            placeholder="Your environment URL (e.g. https://your-environment.crm.dynamics.com)"
             value={environmentUrl}
             onChange={(event) => setEnvironmentUrl(event.target.value)}
             required
