@@ -9,11 +9,19 @@ import { MsalProvider } from '@azure/msal-react'
 import './index.css'
 import App from './App.tsx'
 
+function getRedirectUri() {
+  const { hostname, origin } = window.location
+  const isLocalhost =
+    hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1'
+
+  return isLocalhost ? origin : `${origin}/copilot-studio-insights`
+}
+
 const msalConfig: Configuration = {
   auth: {
     clientId: '537c9fd5-1887-4786-9fc2-05863149de86',
     authority: 'https://login.microsoftonline.com/common',
-    redirectUri: window.location.origin,
+    redirectUri: getRedirectUri(),
   },
   cache: {
     cacheLocation: BrowserCacheLocation.SessionStorage,
