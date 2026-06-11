@@ -49,6 +49,20 @@ type ChatMessage = {
   author: 'user' | 'agent'
   text: string
   date: Date | null
+  feedback: MessageFeedback | null
+}
+
+type MessageFeedback = {
+  reaction: string
+  text: string | null
+}
+
+type TranscriptReviewDetails = {
+  channel: string
+  outcome: string
+  turnCount: number | null
+  duration: string
+  knowledgeSources: string[]
 }
 
 function getEnvironmentOrigin(environmentUrl: string) {
@@ -449,8 +463,161 @@ function getActivityAuthor(activity: Record<string, unknown>): ChatMessage['auth
   return 'agent'
 }
 
+function getRecordObject(value: unknown) {
+  return value && typeof value === 'object' ? (value as Record<string, unknown>) : null
+}
+
+function addTextCitationTitles(value: unknown, sources: Set<string>) {
+  if (!value || typeof value !== 'object') {
+    return
+  }
+
+  const record = value as Record<string, unknown>
+  const textCitations = record.textCitations
+
+  if (Array.isArray(textCitations)) {
+    textCitations.forEach((citation) => {
+      const citationRecord = getRecordObject(citation)
+      const title = citationRecord?.title
+
+      if (typeof title === 'string' && title.trim()) {
+        sources.add(title.trim())
+      }
+    })
+  }
+
+  Object.values(record).forEach((childValue) => addTextCitationTitles(childValue, sources))
+}
+
+function getTranscriptChannel(transcript: DataverseRecord) {
+  const channelId = getTranscriptActivities(transcript)
+    .map((activity) => activity.channelId)
+    .find((channel): channel is string => typeof channel === 'string' && Boolean(channel))
+
+  if (!channelId) {
+    return 'Unknown'
+  }
+
+  return channelId
+    .split(/[-_\s]+/)
+    .filter(Boolean)
+    .map((word) => `${word[0].toUpperCase()}${word.slice(1)}`)
+    .join(' ')
+}
+
+function getSessionInfo(transcript: DataverseRecord) {
+  const sessionActivity = getTranscriptActivities(transcript).find(
+    (activity) => activity.valueType === 'SessionInfo',
+  )
+
+  return getRecordObject(sessionActivity?.value)
+}
+
+function formatDurationFromMs(durationMs: number) {
+  if (!Number.isFinite(durationMs) || durationMs <= 0) {
+    return 'Unknown'
+  }
+
+  const totalSeconds = Math.round(durationMs / 1000)
+  const minutes = Math.floor(totalSeconds / 60)
+  const seconds = totalSeconds % 60
+
+  if (minutes === 0) {
+    return `${seconds}s`
+  }
+
+  return `${minutes}m ${seconds}s`
+}
+
+function getTranscriptDuration(transcript: DataverseRecord) {
+  const sessionInfo = getSessionInfo(transcript)
+  const startTime =
+    typeof sessionInfo?.startTimeUtc === 'string'
+      ? new Date(sessionInfo.startTimeUtc)
+      : null
+  const endTime =
+    typeof sessionInfo?.endTimeUtc === 'string' ? new Date(sessionInfo.endTimeUtc) : null
+
+  if (
+    startTime &&
+    endTime &&
+    !Number.isNaN(startTime.getTime()) &&
+    !Number.isNaN(endTime.getTime())
+  ) {
+    return formatDurationFromMs(endTime.getTime() - startTime.getTime())
+  }
+
+  const activityDates = getTranscriptActivities(transcript)
+    .map(getActivityDate)
+    .filter((date): date is Date => Boolean(date))
+    .sort((first, second) => first.getTime() - second.getTime())
+
+  if (activityDates.length < 2) {
+    return 'Unknown'
+  }
+
+  return formatDurationFromMs(
+    activityDates[activityDates.length - 1].getTime() - activityDates[0].getTime(),
+  )
+}
+
+function getTranscriptKnowledgeSources(transcript: DataverseRecord) {
+  const sources = new Set<string>()
+
+  getTranscriptActivities(transcript).forEach((activity) => {
+    addTextCitationTitles(activity, sources)
+  })
+
+  return [...sources]
+}
+
+function getFeedbackByReplyToId(transcript: DataverseRecord) {
+  const feedbackByReplyToId = new Map<string, MessageFeedback>()
+
+  getTranscriptActivities(transcript).forEach((activity) => {
+    if (activity.type !== 'invoke' || activity.name !== 'message/submitAction') {
+      return
+    }
+
+    const value = getRecordObject(activity.value)
+    const actionValue = getRecordObject(value?.actionValue)
+    const feedback = getRecordObject(actionValue?.feedback)
+    const replyToId = typeof activity.replyToId === 'string' ? activity.replyToId : null
+    const reaction = typeof actionValue?.reaction === 'string' ? actionValue.reaction : null
+
+    if (!replyToId || !reaction) {
+      return
+    }
+
+    feedbackByReplyToId.set(replyToId, {
+      reaction,
+      text:
+        typeof feedback?.feedbackText === 'string' && feedback.feedbackText.trim()
+          ? feedback.feedbackText.trim()
+          : null,
+    })
+  })
+
+  return feedbackByReplyToId
+}
+
+function getTranscriptReviewDetails(transcript: DataverseRecord): TranscriptReviewDetails {
+  const sessionInfo = getSessionInfo(transcript)
+
+  return {
+    channel: getTranscriptChannel(transcript),
+    outcome:
+      (typeof sessionInfo?.outcome === 'string' && sessionInfo.outcome) || 'Unknown',
+    turnCount:
+      typeof sessionInfo?.turnCount === 'number' ? sessionInfo.turnCount : null,
+    duration: getTranscriptDuration(transcript),
+    knowledgeSources: getTranscriptKnowledgeSources(transcript),
+  }
+}
+
 function buildChatMessages(transcript: DataverseRecord): ChatMessage[] {
   const fallbackDate = getConversationDate(transcript)
+  const feedbackByReplyToId = getFeedbackByReplyToId(transcript)
 
   return getTranscriptActivities(transcript)
     .filter((activity) => activity.type === 'message')
@@ -471,6 +638,10 @@ function buildChatMessages(transcript: DataverseRecord): ChatMessage[] {
         author: getActivityAuthor(activity),
         text,
         date: getActivityDate(activity) ?? fallbackDate,
+        feedback:
+          typeof activity.id === 'string'
+            ? feedbackByReplyToId.get(activity.id) ?? null
+            : null,
       }
     })
     .filter((message): message is ChatMessage => Boolean(message))
@@ -532,6 +703,9 @@ function App() {
   const selectedChatMessages = selectedTranscript
     ? buildChatMessages(selectedTranscript.record)
     : []
+  const selectedTranscriptReviewDetails = selectedTranscript
+    ? getTranscriptReviewDetails(selectedTranscript.record)
+    : null
 
   async function handleLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -661,29 +835,84 @@ function App() {
                     </p>
                   </div>
                 </div>
-                <div className="chat-thread" aria-label="Conversation transcript">
-                  {selectedChatMessages.length > 0 ? (
-                    selectedChatMessages.map((message) => (
-                      <article
-                        className={`chat-message is-${message.author}`}
-                        key={message.id}
-                      >
-                        <span className="chat-author">
-                          {message.author === 'user' ? 'User' : selectedBot.name}
-                        </span>
-                        <p>{message.text}</p>
-                        {message.date && (
-                          <time dateTime={message.date.toISOString()}>
-                            {formatDate(message.date)}
-                          </time>
-                        )}
-                      </article>
-                    ))
-                  ) : (
-                    <p className="empty-message">
-                      No chat messages were found in this transcript.
-                    </p>
-                  )}
+                <div className="conversation-review-layout">
+                  <aside className="conversation-meta">
+                    {selectedTranscriptReviewDetails && (
+                      <dl className="review-summary" aria-label="Transcript details">
+                        <div>
+                          <dt>Channel</dt>
+                          <dd>{selectedTranscriptReviewDetails.channel}</dd>
+                        </div>
+                        <div>
+                          <dt>Outcome</dt>
+                          <dd>{selectedTranscriptReviewDetails.outcome}</dd>
+                        </div>
+                        <div>
+                          <dt>Turn count</dt>
+                          <dd>
+                            {selectedTranscriptReviewDetails.turnCount?.toLocaleString() ??
+                              'Unknown'}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>Duration</dt>
+                          <dd>{selectedTranscriptReviewDetails.duration}</dd>
+                        </div>
+                        <div className="knowledge-summary">
+                          <dt>Knowledge sources used</dt>
+                          <dd>
+                            {selectedTranscriptReviewDetails.knowledgeSources.length >
+                            0 ? (
+                              selectedTranscriptReviewDetails.knowledgeSources.map(
+                                (source) => <span key={source}>{source}</span>,
+                              )
+                            ) : (
+                              <span>None detected</span>
+                            )}
+                          </dd>
+                        </div>
+                      </dl>
+                    )}
+                  </aside>
+                  <div className="chat-thread" aria-label="Conversation transcript">
+                    {selectedChatMessages.length > 0 ? (
+                      selectedChatMessages.map((message) => (
+                        <article
+                          className={`chat-message is-${message.author}`}
+                          key={message.id}
+                        >
+                          <span className="chat-author">
+                            {message.author === 'user' ? 'User' : selectedBot.name}
+                          </span>
+                          <p>{message.text}</p>
+                          {message.feedback && (
+                            <div className="message-feedback">
+                              <strong>
+                                Feedback:{' '}
+                                {message.feedback.reaction === 'like'
+                                  ? 'Liked'
+                                  : message.feedback.reaction === 'dislike'
+                                    ? 'Disliked'
+                                    : message.feedback.reaction}
+                              </strong>
+                              {message.feedback.text && (
+                                <span>{message.feedback.text}</span>
+                              )}
+                            </div>
+                          )}
+                          {message.date && (
+                            <time dateTime={message.date.toISOString()}>
+                              {formatDate(message.date)}
+                            </time>
+                          )}
+                        </article>
+                      ))
+                    ) : (
+                      <p className="empty-message">
+                        No chat messages were found in this transcript.
+                      </p>
+                    )}
+                  </div>
                 </div>
               </section>
             </>
