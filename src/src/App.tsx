@@ -85,6 +85,14 @@ type KnowledgeSourceSummary = {
   agents: KnowledgeSourceAgentUsage[]
 }
 
+type FeedbackSummary = {
+  id: string
+  agent: BotSummary
+  transcript: TranscriptDetail
+  message: ChatMessage
+  feedback: MessageFeedback
+}
+
 type AppView = 'dashboard' | 'agents' | 'makers' | 'knowledge' | 'feedback'
 
 const APP_NAV_ITEMS: { id: AppView; label: string }[] = [
@@ -885,6 +893,35 @@ function buildKnowledgeSourceSummaries(
     )
 }
 
+function buildFeedbackSummaries(
+  bots: BotSummary[],
+  conversationTranscripts: DataverseRecord[],
+): FeedbackSummary[] {
+  return bots
+    .flatMap((bot) =>
+      buildTranscriptDetailsForBot(bot, conversationTranscripts).flatMap((transcript) =>
+        buildChatMessages(transcript.record)
+          .filter(
+            (message): message is ChatMessage & { feedback: MessageFeedback } =>
+              Boolean(message.feedback),
+          )
+          .map((message) => ({
+            id: `${bot.id}-${transcript.id}-${message.id}`,
+            agent: bot,
+            transcript,
+            message,
+            feedback: message.feedback,
+          })),
+      ),
+    )
+    .sort((first, second) => {
+      const firstTime = first.message.date?.getTime() ?? 0
+      const secondTime = second.message.date?.getTime() ?? 0
+
+      return secondTime - firstTime
+    })
+}
+
 function App() {
   const { instance, inProgress } = useMsal()
   const [environmentUrl, setEnvironmentUrl] = useState(getStoredEnvironmentUrl)
@@ -915,6 +952,10 @@ function App() {
   )
   const knowledgeSourceSummaries = useMemo(
     () => buildKnowledgeSourceSummaries(botSummaries, conversationTranscripts),
+    [botSummaries, conversationTranscripts],
+  )
+  const feedbackSummaries = useMemo(
+    () => buildFeedbackSummaries(botSummaries, conversationTranscripts),
     [botSummaries, conversationTranscripts],
   )
   const totalSessionCount = conversationTranscriptCount ?? conversationTranscripts.length
@@ -1474,6 +1515,60 @@ function App() {
                   ) : (
                     <p className="empty-message">
                       No knowledge source usage was found in these transcripts.
+                    </p>
+                  )}
+                </div>
+              </div>
+            ) : activeView === 'feedback' ? (
+              <div className="feedback-page">
+                <div className="dashboard-heading">
+                  <p className="eyebrow">Feedback</p>
+                  <h1>Collected feedback</h1>
+                  <p>
+                    {feedbackSummaries.length.toLocaleString()} feedback items across
+                    all recorded sessions.
+                  </p>
+                </div>
+                <div className="feedback-list" aria-label="Collected feedback">
+                  {feedbackSummaries.length > 0 ? (
+                    feedbackSummaries.map((item) => (
+                      <button
+                        className={`feedback-row is-${item.feedback.reaction}`}
+                        key={item.id}
+                        type="button"
+                        onClick={() => {
+                          setActiveView('agents')
+                          setSelectedBotId(item.agent.id)
+                          setSelectedTranscriptId(item.transcript.id)
+                        }}
+                      >
+                        <span
+                          className="feedback-reaction"
+                          aria-label={getFeedbackReactionLabel(item.feedback.reaction)}
+                        >
+                          {getFeedbackReactionIcon(item.feedback.reaction)}
+                        </span>
+                        <span className="feedback-comment">
+                          <strong>
+                            {item.feedback.text || 'No comment provided'}
+                          </strong>
+                          <small>
+                            {formatDate(item.message.date)}
+                          </small>
+                        </span>
+                        <span className="feedback-agent">
+                          {item.agent.iconSource ? (
+                            <img src={item.agent.iconSource} alt="" />
+                          ) : (
+                            <span aria-hidden="true">{item.agent.initials}</span>
+                          )}
+                          <strong>{item.agent.name}</strong>
+                        </span>
+                      </button>
+                    ))
+                  ) : (
+                    <p className="empty-message">
+                      No message feedback was found in these transcripts.
                     </p>
                   )}
                 </div>
