@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useMemo, useState, type FormEvent } from 'react'
 import { InteractionStatus } from '@azure/msal-browser'
 import { useMsal } from '@azure/msal-react'
 import './App.css'
@@ -748,6 +748,33 @@ function App() {
   const isLoggingIn = inProgress !== InteractionStatus.None
   const botSummaries = buildBotSummaries(bots, conversationTranscripts)
   const totalSessionCount = conversationTranscriptCount ?? conversationTranscripts.length
+  const totalMakerCount = useMemo(
+    () =>
+      new Set(
+        bots
+          .map((bot) => getStringValue(bot, ['_createdby_value', 'createdby']))
+          .filter((makerId): makerId is string => Boolean(makerId))
+          .map(normalizeLookupKey),
+      ).size,
+    [bots],
+  )
+  const totalExchangedMessageCount = useMemo(
+    () =>
+      conversationTranscripts.reduce(
+        (total, transcript) => total + getTranscriptMessageCount(transcript),
+        0,
+      ),
+    [conversationTranscripts],
+  )
+  const totalKnowledgeSourceCount = useMemo(
+    () =>
+      new Set(
+        conversationTranscripts.flatMap((transcript) =>
+          getTranscriptKnowledgeSources(transcript),
+        ),
+      ).size,
+    [conversationTranscripts],
+  )
   const selectedBot =
     selectedBotId && botSummaries.find((bot) => bot.id === selectedBotId)
   const selectedBotTranscripts = selectedBot
@@ -900,6 +927,21 @@ function App() {
                     <span>{totalSessionCount.toLocaleString()}</span>
                     <strong>Total sessions</strong>
                     <p>ConversationTranscript records across all agents.</p>
+                  </article>
+                  <article>
+                    <span>{totalMakerCount.toLocaleString()}</span>
+                    <strong>Total makers</strong>
+                    <p>Unique people who created agents in this environment.</p>
+                  </article>
+                  <article>
+                    <span>{totalExchangedMessageCount.toLocaleString()}</span>
+                    <strong>Total exchanged messages</strong>
+                    <p>Messages exchanged across all recorded sessions.</p>
+                  </article>
+                  <article>
+                    <span>{totalKnowledgeSourceCount.toLocaleString()}</span>
+                    <strong>Knowledge sources used</strong>
+                    <p>Unique knowledge sources referenced by all sessions.</p>
                   </article>
                 </div>
               </div>

@@ -23,6 +23,7 @@
   grid-template-columns: 260px minmax(0, 1fr);
   overflow: hidden;
   color: #111827;
+  font-size: 14px;
 }
 
 .app-sidebar {
@@ -44,14 +45,14 @@
 
 .app-brand span {
   color: rgba(255, 255, 255, 0.62);
-  font-size: 0.86rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .app-brand strong {
-  font-size: 2rem;
+  font-size: 1.45rem;
   line-height: 0.95;
   letter-spacing: -0.05em;
 }
@@ -66,7 +67,7 @@
   width: 100%;
   border: 0;
   border-radius: 14px;
-  padding: 12px 14px;
+  padding: 10px 12px;
   color: rgba(255, 255, 255, 0.74);
   background: transparent;
   font: inherit;
@@ -90,7 +91,7 @@
 .app-sidebar-credit {
   margin: auto 10px 0;
   color: rgba(255, 255, 255, 0.58);
-  font-size: 0.9rem;
+  font-size: 0.78rem;
 }
 
 .app-sidebar-credit a {
@@ -133,26 +134,26 @@
 .placeholder-page h1 {
   margin: 0;
   color: #111827;
-  font-size: clamp(2rem, 5vw, 4.6rem);
-  line-height: 0.9;
-  letter-spacing: -0.07em;
+  font-size: clamp(1.5rem, 3.5vw, 2.8rem);
+  line-height: 0.95;
+  letter-spacing: -0.05em;
 }
 
 .dashboard-heading p:last-child,
 .placeholder-page p:last-child {
   margin: 10px 0 0;
   color: #374151;
-  font-size: 1.05rem;
+  font-size: 0.88rem;
 }
 
 .dashboard-metrics {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 18px;
 }
 
 .dashboard-metrics article {
-  min-height: 220px;
+  min-height: 150px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -165,22 +166,22 @@
 
 .dashboard-metrics span {
   color: #111827;
-  font-size: clamp(4rem, 12vw, 8rem);
+  font-size: clamp(2.6rem, 6vw, 4.6rem);
   font-weight: 700;
   line-height: 0.82;
   letter-spacing: -0.08em;
 }
 
 .dashboard-metrics strong {
-  margin-top: 22px;
+  margin-top: 16px;
   color: #111827;
-  font-size: 1.35rem;
+  font-size: 1.05rem;
 }
 
 .dashboard-metrics p {
   margin: 8px 0 0;
   color: #4b5563;
-  font-size: 1rem;
+  font-size: 0.86rem;
 }
 
 .credit {
@@ -287,7 +288,7 @@
 .eyebrow {
   margin: 0;
   color: #4b5563;
-  font-size: 0.9rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -296,9 +297,9 @@
 .panel-heading h1 {
   margin: 0;
   color: #111827;
-  font-size: 3em;
-  line-height: 0.9;
-  letter-spacing: -0.06em;
+  font-size: 2.1em;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
 }
 
 .environment-name,
@@ -306,7 +307,7 @@
   width: min(100%, 420px);
   margin: 0;
   color: #374151;
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   text-align: center;
 }
 
@@ -323,11 +324,11 @@
 }
 
 .panel-summary span {
-  padding: 8px 12px;
+  padding: 6px 10px;
   border-radius: 999px;
   color: #1e3a8a;
   background: rgba(219, 234, 254, 0.86);
-  font-size: 0.95rem;
+  font-size: 0.82rem;
   font-weight: 700;
 }
 
@@ -345,7 +346,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 18px 20px;
+  padding: 14px 16px;
   border: 1px solid rgba(17, 24, 39, 0.08);
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.72);
@@ -379,8 +380,8 @@
 }
 
 .bot-icon {
-  width: 56px;
-  height: 56px;
+  width: 44px;
+  height: 44px;
   flex: 0 0 auto;
   border-radius: 8px;
   object-fit: cover;
@@ -392,21 +393,21 @@
   display: grid;
   place-items: center;
   color: #1e3a8a;
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 700;
 }
 
 .bot-row h2 {
   margin: 0;
   color: #111827;
-  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
   line-height: 1.05;
 }
 
 .bot-row p {
   margin: 6px 0 0;
   color: #374151;
-  font-size: 1rem;
+  font-size: 0.86rem;
 }
 
 .bot-stat {
@@ -420,14 +421,14 @@
 
 .bot-stat span {
   color: #111827;
-  font-size: 2.4rem;
+  font-size: 1.7rem;
   font-weight: 700;
   line-height: 1;
 }
 
 .bot-stat small {
   color: #374151;
-  font-size: 0.85rem;
+  font-size: 0.74rem;
 }
 
 .empty-message {
@@ -442,7 +443,7 @@
   align-self: flex-start;
   border: 0;
   border-radius: 999px;
-  padding: 9px 14px;
+  padding: 7px 11px;
   color: #1e3a8a;
   background: rgba(219, 234, 254, 0.86);
   font: inherit;
@@ -492,15 +493,15 @@
 .agent-hero h1 {
   margin: 2px 0 0;
   color: #111827;
-  font-size: clamp(2rem, 5vw, 3.8rem);
-  line-height: 0.9;
-  letter-spacing: -0.06em;
+  font-size: clamp(1.35rem, 3vw, 2.2rem);
+  line-height: 0.95;
+  letter-spacing: -0.05em;
 }
 
 .agent-hero p:last-child {
   margin: 8px 0 0;
   color: #374151;
-  font-size: 1rem;
+  font-size: 0.86rem;
 }
 
 .detail-grid {
@@ -518,7 +519,7 @@
 
 .detail-grid dt {
   color: #4b5563;
-  font-size: 0.82rem;
+  font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -527,7 +528,7 @@
 .detail-grid dd {
   margin: 6px 0 0;
   color: #111827;
-  font-size: 1rem;
+  font-size: 0.86rem;
   overflow-wrap: anywhere;
 }
 
@@ -540,7 +541,7 @@
 .transcript-panel h2 {
   margin: 2px 0 0;
   color: #111827;
-  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-size: clamp(1.25rem, 2.8vw, 1.9rem);
   line-height: 0.95;
   letter-spacing: -0.04em;
 }
@@ -643,7 +644,7 @@
   min-width: 0;
   margin: 0;
   color: #374151;
-  font-size: 0.95rem;
+  font-size: 0.78rem;
   font-weight: 700;
   line-height: 1;
   letter-spacing: 0;
@@ -673,7 +674,7 @@
 
 .review-summary dt {
   color: #4b5563;
-  font-size: 0.72rem;
+  font-size: 0.64rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -682,7 +683,7 @@
 .review-summary dd {
   margin: 4px 0 0;
   color: #111827;
-  font-size: 0.95rem;
+  font-size: 0.78rem;
   overflow-wrap: anywhere;
 }
 
@@ -711,7 +712,7 @@
   border-radius: 12px;
   color: #7c2d12;
   background: #ffedd5;
-  font-size: 0.9rem;
+  font-size: 0.76rem;
 }
 
 .chat-thread {
@@ -747,7 +748,7 @@
 .chat-author {
   display: block;
   color: #4b5563;
-  font-size: 0.82rem;
+  font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -756,7 +757,7 @@
 .chat-message p {
   margin: 6px 0 0;
   color: #111827;
-  font-size: 1.05rem;
+  font-size: 0.88rem;
   white-space: pre-wrap;
 }
 
@@ -773,21 +774,21 @@
   background: rgba(255, 255, 255, 0.92);
   box-shadow: 0 8px 18px rgba(17, 24, 39, 0.1);
   cursor: help;
-  font-size: 0.95rem;
+  font-size: 0.82rem;
 }
 
 .chat-message time {
   display: block;
   margin-top: 8px;
   color: #6b7280;
-  font-size: 0.85rem;
+  font-size: 0.72rem;
 }
 
 .status-message,
 .error-message {
   width: min(100%, 420px);
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 0.82rem;
 }
 
 .status-message {
