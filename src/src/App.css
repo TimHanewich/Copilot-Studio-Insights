@@ -313,6 +313,133 @@
   white-space: nowrap;
 }
 
+.knowledge-page {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.knowledge-list {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.knowledge-row {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.38fr) minmax(0, 0.62fr);
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.06);
+}
+
+.knowledge-source-main {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.knowledge-source-main > span {
+  min-width: 54px;
+  color: #7c2d12;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 0.9;
+  text-align: center;
+}
+
+.knowledge-source-main h2 {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: #111827;
+  font-size: 1rem;
+  line-height: 1.1;
+}
+
+.knowledge-source-main p {
+  margin: 5px 0 0;
+  color: #4b5563;
+  font-size: 0.82rem;
+}
+
+.knowledge-agent-list {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.knowledge-agent-row {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border: 1px solid rgba(251, 146, 60, 0.32);
+  border-radius: 14px;
+  color: #111827;
+  background: #ffedd5;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.knowledge-agent-row:hover,
+.knowledge-agent-row:focus-visible {
+  background: #fed7aa;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.knowledge-agent-row:focus-visible {
+  outline: 3px solid rgba(251, 146, 60, 0.28);
+  outline-offset: 2px;
+}
+
+.knowledge-agent-row img,
+.knowledge-agent-row > span {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+}
+
+.knowledge-agent-row img {
+  object-fit: cover;
+}
+
+.knowledge-agent-row > span {
+  display: grid;
+  place-items: center;
+  color: #7c2d12;
+  background: rgba(255, 255, 255, 0.72);
+  font-size: 0.64rem;
+  font-weight: 700;
+}
+
+.knowledge-agent-row strong {
+  min-width: 0;
+  overflow: hidden;
+  color: #111827;
+  font-size: 0.84rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.knowledge-agent-row small {
+  color: #7c2d12;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 .credit {
   position: absolute;
   top: 20px;
@@ -960,6 +1087,7 @@
   .agent-detail,
   .conversation-review-layout,
   .detail-grid,
+  .knowledge-row,
   .maker-row,
   .review-summary {
     grid-template-columns: 1fr;

@@ -73,6 +73,18 @@ type MakerSummary = {
   agents: BotSummary[]
 }
 
+type KnowledgeSourceAgentUsage = {
+  agent: BotSummary
+  count: number
+}
+
+type KnowledgeSourceSummary = {
+  id: string
+  name: string
+  totalUsageCount: number
+  agents: KnowledgeSourceAgentUsage[]
+}
+
 type AppView = 'dashboard' | 'agents' | 'makers' | 'knowledge' | 'feedback'
 
 const APP_NAV_ITEMS: { id: AppView; label: string }[] = [
@@ -637,8 +649,26 @@ function formatKnowledgeSourceName(source: string) {
     .trim()
 }
 
-function getTranscriptKnowledgeSources(transcript: DataverseRecord) {
-  const sources = new Set<string>()
+function getKnowledgeSourceName(source: unknown) {
+  if (typeof source === 'string' && source.trim()) {
+    return formatKnowledgeSourceName(source)
+  }
+
+  const sourceRecord = getRecordObject(source)
+  const sourceName =
+    sourceRecord &&
+    ['title', 'name', 'Name', 'displayName', 'sourceName']
+      .map((fieldName) => sourceRecord[fieldName])
+      .find(
+        (fieldValue): fieldValue is string =>
+          typeof fieldValue === 'string' && Boolean(fieldValue.trim()),
+      )
+
+  return sourceName ? formatKnowledgeSourceName(sourceName) : null
+}
+
+function getTranscriptKnowledgeSourceUsages(transcript: DataverseRecord) {
+  const sources: string[] = []
 
   getTranscriptActivities(transcript).forEach((activity) => {
     const value = getRecordObject(activity.value)
@@ -649,26 +679,19 @@ function getTranscriptKnowledgeSources(transcript: DataverseRecord) {
     }
 
     outputKnowledgeSources.forEach((source) => {
-      if (typeof source === 'string' && source.trim()) {
-        sources.add(formatKnowledgeSourceName(source))
-        return
-      }
-
-      const sourceRecord = getRecordObject(source)
-      const sourceName =
-        sourceRecord &&
-        ['title', 'name', 'Name', 'displayName', 'sourceName']
-          .map((fieldName) => sourceRecord[fieldName])
-          .find(
-            (fieldValue): fieldValue is string =>
-              typeof fieldValue === 'string' && Boolean(fieldValue.trim()),
-          )
+      const sourceName = getKnowledgeSourceName(source)
 
       if (sourceName) {
-        sources.add(formatKnowledgeSourceName(sourceName))
+        sources.push(sourceName)
       }
     })
   })
+
+  return sources
+}
+
+function getTranscriptKnowledgeSources(transcript: DataverseRecord) {
+  const sources = new Set(getTranscriptKnowledgeSourceUsages(transcript))
 
   return [...sources]
 }
@@ -795,6 +818,73 @@ function buildTranscriptDetailsForBot(
     })
 }
 
+function buildKnowledgeSourceSummaries(
+  bots: BotSummary[],
+  conversationTranscripts: DataverseRecord[],
+): KnowledgeSourceSummary[] {
+  const knowledgeSources = new Map<
+    string,
+    {
+      id: string
+      name: string
+      totalUsageCount: number
+      agentUsageById: Map<string, KnowledgeSourceAgentUsage>
+    }
+  >()
+
+  conversationTranscripts.forEach((transcript) => {
+    const transcriptLookupKeys = getTranscriptLookupKeys(transcript)
+    const matchingBot = bots.find((bot) =>
+      hasMatchingLookupKey(bot.lookupKeys, transcriptLookupKeys),
+    )
+
+    if (!matchingBot) {
+      return
+    }
+
+    getTranscriptKnowledgeSourceUsages(transcript).forEach((sourceName) => {
+      const sourceKey = normalizeLookupKey(sourceName)
+      const sourceSummary =
+        knowledgeSources.get(sourceKey) ??
+        {
+          id: sourceKey,
+          name: sourceName,
+          totalUsageCount: 0,
+          agentUsageById: new Map<string, KnowledgeSourceAgentUsage>(),
+        }
+      const agentUsage =
+        sourceSummary.agentUsageById.get(matchingBot.id) ??
+        {
+          agent: matchingBot,
+          count: 0,
+        }
+
+      sourceSummary.totalUsageCount += 1
+      sourceSummary.agentUsageById.set(matchingBot.id, {
+        ...agentUsage,
+        count: agentUsage.count + 1,
+      })
+      knowledgeSources.set(sourceKey, sourceSummary)
+    })
+  })
+
+  return [...knowledgeSources.values()]
+    .map((source) => ({
+      id: source.id,
+      name: source.name,
+      totalUsageCount: source.totalUsageCount,
+      agents: [...source.agentUsageById.values()].sort(
+        (first, second) =>
+          second.count - first.count || first.agent.name.localeCompare(second.agent.name),
+      ),
+    }))
+    .sort(
+      (first, second) =>
+        second.totalUsageCount - first.totalUsageCount ||
+        first.name.localeCompare(second.name),
+    )
+}
+
 function App() {
   const { instance, inProgress } = useMsal()
   const [environmentUrl, setEnvironmentUrl] = useState(getStoredEnvironmentUrl)
@@ -823,6 +913,10 @@ function App() {
     () => buildMakerSummaries(botSummaries, systemUsers),
     [botSummaries, systemUsers],
   )
+  const knowledgeSourceSummaries = useMemo(
+    () => buildKnowledgeSourceSummaries(botSummaries, conversationTranscripts),
+    [botSummaries, conversationTranscripts],
+  )
   const totalSessionCount = conversationTranscriptCount ?? conversationTranscripts.length
   const totalMakerCount = useMemo(
     () =>
@@ -842,15 +936,7 @@ function App() {
       ),
     [conversationTranscripts],
   )
-  const totalKnowledgeSourceCount = useMemo(
-    () =>
-      new Set(
-        conversationTranscripts.flatMap((transcript) =>
-          getTranscriptKnowledgeSources(transcript),
-        ),
-      ).size,
-    [conversationTranscripts],
-  )
+  const totalKnowledgeSourceCount = knowledgeSourceSummaries.length
   const selectedBot =
     selectedBotId && botSummaries.find((bot) => bot.id === selectedBotId)
   const selectedBotTranscripts = selectedBot
@@ -1333,6 +1419,61 @@ function App() {
                   ) : (
                     <p className="empty-message">
                       No agent makers were found in this environment.
+                    </p>
+                  )}
+                </div>
+              </div>
+            ) : activeView === 'knowledge' ? (
+              <div className="knowledge-page">
+                <div className="dashboard-heading">
+                  <p className="eyebrow">Knowledge</p>
+                  <h1>Knowledge sources used</h1>
+                  <p>
+                    {knowledgeSourceSummaries.length.toLocaleString()} sources used
+                    across {bots.length.toLocaleString()} agents.
+                  </p>
+                </div>
+                <div className="knowledge-list" aria-label="Knowledge source usage">
+                  {knowledgeSourceSummaries.length > 0 ? (
+                    knowledgeSourceSummaries.map((source) => (
+                      <article className="knowledge-row" key={source.id}>
+                        <div className="knowledge-source-main">
+                          <span>{source.totalUsageCount.toLocaleString()}</span>
+                          <div>
+                            <h2>{source.name}</h2>
+                            <p>
+                              Used by {source.agents.length.toLocaleString()}{' '}
+                              {source.agents.length === 1 ? 'agent' : 'agents'}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="knowledge-agent-list">
+                          {source.agents.map(({ agent, count }) => (
+                            <button
+                              className="knowledge-agent-row"
+                              key={agent.id}
+                              type="button"
+                              onClick={() => {
+                                setActiveView('agents')
+                                setSelectedBotId(agent.id)
+                                setSelectedTranscriptId(null)
+                              }}
+                            >
+                              {agent.iconSource ? (
+                                <img src={agent.iconSource} alt="" />
+                              ) : (
+                                <span aria-hidden="true">{agent.initials}</span>
+                              )}
+                              <strong>{agent.name}</strong>
+                              <small>{count.toLocaleString()} uses</small>
+                            </button>
+                          ))}
+                        </div>
+                      </article>
+                    ))
+                  ) : (
+                    <p className="empty-message">
+                      No knowledge source usage was found in these transcripts.
                     </p>
                   )}
                 </div>
