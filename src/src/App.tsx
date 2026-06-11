@@ -41,6 +41,14 @@ type TranscriptDetail = {
   id: string
   date: Date | null
   messageCount: number
+  record: DataverseRecord
+}
+
+type ChatMessage = {
+  id: string
+  author: 'user' | 'agent'
+  text: string
+  date: Date | null
 }
 
 function getEnvironmentOrigin(environmentUrl: string) {
@@ -381,6 +389,93 @@ function getTranscriptMessageCount(transcript: DataverseRecord) {
   return 0
 }
 
+function getTranscriptActivities(transcript: DataverseRecord) {
+  const content = transcript.content
+
+  if (typeof content !== 'string') {
+    return []
+  }
+
+  try {
+    const parsedContent: unknown = JSON.parse(content)
+
+    if (
+      parsedContent &&
+      typeof parsedContent === 'object' &&
+      'activities' in parsedContent &&
+      Array.isArray(parsedContent.activities)
+    ) {
+      return parsedContent.activities.filter(
+        (activity): activity is Record<string, unknown> =>
+          Boolean(activity) && typeof activity === 'object',
+      )
+    }
+  } catch {
+    return []
+  }
+
+  return []
+}
+
+function getActivityDate(activity: Record<string, unknown>) {
+  const timestampMs = activity.timestampMs
+
+  if (typeof timestampMs === 'number') {
+    const date = new Date(timestampMs)
+    return Number.isNaN(date.getTime()) ? null : date
+  }
+
+  const timestamp = activity.timestamp
+  if (typeof timestamp === 'number') {
+    const date = new Date(timestamp * 1000)
+    return Number.isNaN(date.getTime()) ? null : date
+  }
+
+  if (typeof timestamp === 'string') {
+    const date = new Date(timestamp)
+    return Number.isNaN(date.getTime()) ? null : date
+  }
+
+  return null
+}
+
+function getActivityAuthor(activity: Record<string, unknown>): ChatMessage['author'] {
+  const from = activity.from
+
+  if (from && typeof from === 'object' && 'role' in from) {
+    return from.role === 1 ? 'user' : 'agent'
+  }
+
+  return 'agent'
+}
+
+function buildChatMessages(transcript: DataverseRecord): ChatMessage[] {
+  const fallbackDate = getConversationDate(transcript)
+
+  return getTranscriptActivities(transcript)
+    .filter((activity) => activity.type === 'message')
+    .map((activity, index) => {
+      const text =
+        typeof activity.text === 'string' && activity.text.trim()
+          ? activity.text.trim()
+          : typeof activity.speak === 'string' && activity.speak.trim()
+            ? activity.speak.trim()
+            : ''
+
+      if (!text) {
+        return null
+      }
+
+      return {
+        id: typeof activity.id === 'string' ? activity.id : `message-${index}`,
+        author: getActivityAuthor(activity),
+        text,
+        date: getActivityDate(activity) ?? fallbackDate,
+      }
+    })
+    .filter((message): message is ChatMessage => Boolean(message))
+}
+
 function buildTranscriptDetailsForBot(
   bot: BotSummary,
   conversationTranscripts: DataverseRecord[],
@@ -395,6 +490,7 @@ function buildTranscriptDetailsForBot(
         `transcript-${index}`,
       date: getConversationDate(transcript),
       messageCount: getTranscriptMessageCount(transcript),
+      record: transcript,
     }))
     .sort((first, second) => {
       const firstTime = first.date?.getTime() ?? 0
@@ -420,12 +516,21 @@ function App() {
   const [isLoginPaneFading, setIsLoginPaneFading] = useState(false)
   const [showBotPanel, setShowBotPanel] = useState(false)
   const [selectedBotId, setSelectedBotId] = useState<string | null>(null)
+  const [selectedTranscriptId, setSelectedTranscriptId] = useState<string | null>(
+    null,
+  )
   const isLoggingIn = inProgress !== InteractionStatus.None
   const botSummaries = buildBotSummaries(bots, conversationTranscripts)
   const selectedBot =
     selectedBotId && botSummaries.find((bot) => bot.id === selectedBotId)
   const selectedBotTranscripts = selectedBot
     ? buildTranscriptDetailsForBot(selectedBot, conversationTranscripts)
+    : []
+  const selectedTranscript =
+    selectedTranscriptId &&
+    selectedBotTranscripts.find((transcript) => transcript.id === selectedTranscriptId)
+  const selectedChatMessages = selectedTranscript
+    ? buildChatMessages(selectedTranscript.record)
     : []
 
   async function handleLogin(event: FormEvent<HTMLFormElement>) {
@@ -434,6 +539,7 @@ function App() {
     setIsLoginPaneFading(false)
     setShowBotPanel(false)
     setSelectedBotId(null)
+    setSelectedTranscriptId(null)
 
     const trimmedEnvironmentUrl = environmentUrl.trim()
     if (!trimmedEnvironmentUrl) {
@@ -517,14 +623,79 @@ function App() {
       {showBotPanel ? (
         <section
           className="bot-panel"
-          aria-labelledby={selectedBot ? 'agent-title' : 'bot-panel-title'}
+          aria-labelledby={
+            selectedTranscript
+              ? 'conversation-title'
+              : selectedBot
+                ? 'agent-title'
+                : 'bot-panel-title'
+          }
         >
-          {selectedBot ? (
+          {selectedBot && selectedTranscript ? (
             <>
               <button
                 type="button"
                 className="back-button"
-                onClick={() => setSelectedBotId(null)}
+                onClick={() => setSelectedTranscriptId(null)}
+              >
+                Back to agent
+              </button>
+              <section
+                className="conversation-pane"
+                aria-labelledby="conversation-title"
+              >
+                <div className="conversation-header">
+                  {selectedBot.iconSource ? (
+                    <img className="agent-icon" src={selectedBot.iconSource} alt="" />
+                  ) : (
+                    <span className="agent-icon bot-icon-fallback" aria-hidden="true">
+                      {selectedBot.initials}
+                    </span>
+                  )}
+                  <div>
+                    <p className="eyebrow">Recorded session</p>
+                    <h1 id="conversation-title">{selectedBot.name}</h1>
+                    <p>
+                      {formatDate(selectedTranscript.date)} ·{' '}
+                      {selectedTranscript.messageCount.toLocaleString()} messages
+                    </p>
+                  </div>
+                </div>
+                <div className="chat-thread" aria-label="Conversation transcript">
+                  {selectedChatMessages.length > 0 ? (
+                    selectedChatMessages.map((message) => (
+                      <article
+                        className={`chat-message is-${message.author}`}
+                        key={message.id}
+                      >
+                        <span className="chat-author">
+                          {message.author === 'user' ? 'User' : selectedBot.name}
+                        </span>
+                        <p>{message.text}</p>
+                        {message.date && (
+                          <time dateTime={message.date.toISOString()}>
+                            {formatDate(message.date)}
+                          </time>
+                        )}
+                      </article>
+                    ))
+                  ) : (
+                    <p className="empty-message">
+                      No chat messages were found in this transcript.
+                    </p>
+                  )}
+                </div>
+              </section>
+            </>
+          ) : selectedBot ? (
+            <>
+              <button
+                type="button"
+                className="back-button"
+                onClick={() => {
+                  setSelectedTranscriptId(null)
+                  setSelectedBotId(null)
+                }}
               >
                 Back to all bots
               </button>
@@ -595,12 +766,17 @@ function App() {
                   <div className="transcript-list">
                     {selectedBotTranscripts.length > 0 ? (
                       selectedBotTranscripts.map((transcript) => (
-                        <article className="transcript-row" key={transcript.id}>
+                        <button
+                          className="transcript-row"
+                          key={transcript.id}
+                          type="button"
+                          onClick={() => setSelectedTranscriptId(transcript.id)}
+                        >
                           <span>{formatDate(transcript.date)}</span>
                           <strong>
                             {transcript.messageCount.toLocaleString()} messages
                           </strong>
-                        </article>
+                        </button>
                       ))
                     ) : (
                       <p className="empty-message">
