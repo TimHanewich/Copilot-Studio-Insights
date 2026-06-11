@@ -1019,7 +1019,7 @@ function App() {
           ) : (
             <>
               <div className="panel-heading">
-                <h1 id="bot-panel-title">Your Environment</h1>
+                <h1 id="bot-panel-title">Copilot Studio Activity in Your Environment</h1>
                 <p className="environment-name">{environmentOrigin}</p>
               </div>
               <div className="panel-summary">
@@ -1029,7 +1029,6 @@ function App() {
                     conversationTranscripts.length.toLocaleString()}{' '}
                   sessions
                 </span>
-                <span>{systemUsers.length.toLocaleString()} system users</span>
               </div>
               <div className="bot-list" aria-label="Bots in this environment">
                 {botSummaries.length > 0 ? (
