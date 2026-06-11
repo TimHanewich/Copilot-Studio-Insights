@@ -81,3 +81,23 @@
 .login-card button:hover {
   background: #1f2937;
 }
+
+.login-card button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.status-message,
+.error-message {
+  width: min(100%, 420px);
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.status-message {
+  color: #14532d;
+}
+
+.error-message {
+  color: #991b1b;
+}
