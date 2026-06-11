@@ -872,14 +872,11 @@ function App() {
                         {selectedBot.initials}
                       </span>
                     )}
-                    <div>
-                      <p className="eyebrow">Recorded session</p>
-                      <h1 id="conversation-title">{selectedBot.name}</h1>
-                      <p>
-                        {formatDate(selectedTranscript.date)} ·{' '}
-                        {selectedTranscript.messageCount.toLocaleString()} messages
-                      </p>
-                    </div>
+                    <h1 id="conversation-title">
+                      Recorded session · {selectedBot.name} ·{' '}
+                      {formatDate(selectedTranscript.date)} ·{' '}
+                      {selectedTranscript.messageCount.toLocaleString()} messages
+                    </h1>
                   </div>
                 </div>
                 <div className="conversation-review-layout">
