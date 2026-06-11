@@ -5,9 +5,20 @@ import './App.css'
 
 const DATAVERSE_DELEGATED_SCOPE = 'user_impersonation'
 const CONVERSATION_TRANSCRIPT_TABLE = 'conversationtranscripts'
+const BOTS_TABLE = 'bots'
+const SYSTEM_USERS_TABLE = 'systemusers'
 
-type ConversationTranscriptCountResponse = {
+type DataverseRecord = Record<string, unknown>
+
+type DataverseCollectionResponse = {
+  value: DataverseRecord[]
   '@odata.count'?: number
+  '@odata.nextLink'?: string
+}
+
+type DataverseCollectionResult = {
+  records: DataverseRecord[]
+  count: number
 }
 
 function getEnvironmentOrigin(environmentUrl: string) {
@@ -20,39 +31,48 @@ function buildDataverseScope(environmentOrigin: string) {
   return `${environmentOrigin}/${DATAVERSE_DELEGATED_SCOPE}`
 }
 
-async function fetchConversationTranscriptCount(
+async function fetchDataverseCollection(
   environmentOrigin: string,
   accessToken: string,
-) {
-  const endpoint = new URL(
-    `/api/data/v9.2/${CONVERSATION_TRANSCRIPT_TABLE}`,
-    environmentOrigin,
-  )
-  endpoint.searchParams.set('$select', 'conversationtranscriptid')
+  collectionName: string,
+): Promise<DataverseCollectionResult> {
+  const endpoint = new URL(`/api/data/v9.2/${collectionName}`, environmentOrigin)
   endpoint.searchParams.set('$count', 'true')
-  endpoint.searchParams.set('$top', '1')
+  let requestUrl = endpoint.toString()
+  const records: DataverseRecord[] = []
+  let count: number | null = null
 
-  const response = await fetch(endpoint, {
-    headers: {
-      Accept: 'application/json',
-      Authorization: `Bearer ${accessToken}`,
-      'OData-MaxVersion': '4.0',
-      'OData-Version': '4.0',
-    },
-  })
+  while (requestUrl) {
+    const response = await fetch(requestUrl, {
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+        'OData-MaxVersion': '4.0',
+        'OData-Version': '4.0',
+        Prefer: 'odata.maxpagesize=5000',
+      },
+    })
 
-  if (!response.ok) {
-    throw new Error(
-      `Dataverse request failed: ${response.status} ${response.statusText}`,
-    )
+    if (!response.ok) {
+      throw new Error(
+        `Dataverse ${collectionName} request failed: ${response.status} ${response.statusText}`,
+      )
+    }
+
+    const data = (await response.json()) as DataverseCollectionResponse
+    records.push(...data.value)
+
+    if (typeof data['@odata.count'] === 'number') {
+      count = data['@odata.count']
+    }
+
+    requestUrl = data['@odata.nextLink'] ?? ''
   }
 
-  const data = (await response.json()) as ConversationTranscriptCountResponse
-  if (typeof data['@odata.count'] !== 'number') {
-    throw new Error('Dataverse did not return a conversation transcript count.')
+  return {
+    records,
+    count: count ?? records.length,
   }
-
-  return data['@odata.count']
 }
 
 function App() {
@@ -60,10 +80,14 @@ function App() {
   const [environmentUrl, setEnvironmentUrl] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [environmentOrigin, setEnvironmentOrigin] = useState('')
-  const [conversationTranscriptCount, setConversationTranscriptCount] = useState<
-    number | null
-  >(null)
-  const [isLoadingCount, setIsLoadingCount] = useState(false)
+  const [conversationTranscripts, setConversationTranscripts] = useState<
+    DataverseRecord[]
+  >([])
+  const [bots, setBots] = useState<DataverseRecord[]>([])
+  const [systemUsers, setSystemUsers] = useState<DataverseRecord[]>([])
+  const [conversationTranscriptCount, setConversationTranscriptCount] =
+    useState<number | null>(null)
+  const [isLoadingDataverseData, setIsLoadingDataverseData] = useState(false)
   const isLoggingIn = inProgress !== InteractionStatus.None
 
   async function handleLogin(event: FormEvent<HTMLFormElement>) {
@@ -107,13 +131,27 @@ function App() {
         ).accessToken
 
       setEnvironmentOrigin(parsedEnvironmentOrigin)
-      setIsLoadingCount(true)
+      setIsLoadingDataverseData(true)
 
-      const count = await fetchConversationTranscriptCount(
-        parsedEnvironmentOrigin,
-        accessToken,
-      )
-      setConversationTranscriptCount(count)
+      const [conversationTranscriptResult, botResult, systemUserResult] =
+        await Promise.all([
+          fetchDataverseCollection(
+            parsedEnvironmentOrigin,
+            accessToken,
+            CONVERSATION_TRANSCRIPT_TABLE,
+          ),
+          fetchDataverseCollection(parsedEnvironmentOrigin, accessToken, BOTS_TABLE),
+          fetchDataverseCollection(
+            parsedEnvironmentOrigin,
+            accessToken,
+            SYSTEM_USERS_TABLE,
+          ),
+        ])
+
+      setConversationTranscripts(conversationTranscriptResult.records)
+      setConversationTranscriptCount(conversationTranscriptResult.count)
+      setBots(botResult.records)
+      setSystemUsers(systemUserResult.records)
     } catch (error) {
       setErrorMessage(
         error instanceof Error
@@ -121,7 +159,7 @@ function App() {
           : 'Unable to sign in with the provided environment URL.',
       )
     } finally {
-      setIsLoadingCount(false)
+      setIsLoadingDataverseData(false)
     }
   }
 
@@ -137,15 +175,22 @@ function App() {
         <section className="insights-card" aria-labelledby="page-title">
           <h1 id="page-title">Copilot Studio Insights</h1>
           <p className="environment-name">{environmentOrigin}</p>
-          {isLoadingCount ? (
-            <p className="loading-message">Loading conversation transcripts...</p>
+          {isLoadingDataverseData ? (
+            <p className="loading-message">Loading Dataverse data...</p>
           ) : (
-            <div className="metric">
-              <span className="metric-value">
-                {conversationTranscriptCount?.toLocaleString() ?? '--'}
-              </span>
-              <span className="metric-label">ConversationTranscript records</span>
-            </div>
+            <>
+              <div className="metric">
+                <span className="metric-value">
+                  {conversationTranscriptCount?.toLocaleString() ?? '--'}
+                </span>
+                <span className="metric-label">ConversationTranscript records</span>
+              </div>
+              <p className="dataset-summary">
+                Loaded {conversationTranscripts.length.toLocaleString()} transcripts,{' '}
+                {bots.length.toLocaleString()} bots, and{' '}
+                {systemUsers.length.toLocaleString()} system users.
+              </p>
+            </>
           )}
           {accounts.length > 0 && (
             <p className="status-message">
