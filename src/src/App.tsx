@@ -467,28 +467,6 @@ function getRecordObject(value: unknown) {
   return value && typeof value === 'object' ? (value as Record<string, unknown>) : null
 }
 
-function addTextCitationTitles(value: unknown, sources: Set<string>) {
-  if (!value || typeof value !== 'object') {
-    return
-  }
-
-  const record = value as Record<string, unknown>
-  const textCitations = record.textCitations
-
-  if (Array.isArray(textCitations)) {
-    textCitations.forEach((citation) => {
-      const citationRecord = getRecordObject(citation)
-      const title = citationRecord?.title
-
-      if (typeof title === 'string' && title.trim()) {
-        sources.add(title.trim())
-      }
-    })
-  }
-
-  Object.values(record).forEach((childValue) => addTextCitationTitles(childValue, sources))
-}
-
 function getTranscriptChannel(transcript: DataverseRecord) {
   const channelId = getTranscriptActivities(transcript)
     .map((activity) => activity.channelId)
@@ -561,11 +539,56 @@ function getTranscriptDuration(transcript: DataverseRecord) {
   )
 }
 
+function formatKnowledgeSourceName(source: string) {
+  const trimmedSource = source.trim()
+
+  if (trimmedSource === 'BingUnscopedSearchKnowledge') {
+    return 'Bing Unscoped Search'
+  }
+
+  const fileSourceParts = trimmedSource.split('.file.')
+  const fileSource = fileSourceParts[fileSourceParts.length - 1]
+  const fileName =
+    fileSource?.match(/^(.+\.(?:csv|docx?|html?|md|pdf|pptx?|txt|xlsx?))(?:[_-].*)?$/i)?.[1] ??
+    fileSource
+
+  return fileName
+    .replace(/[_-]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
 function getTranscriptKnowledgeSources(transcript: DataverseRecord) {
   const sources = new Set<string>()
 
   getTranscriptActivities(transcript).forEach((activity) => {
-    addTextCitationTitles(activity, sources)
+    const value = getRecordObject(activity.value)
+    const outputKnowledgeSources = value?.outputKnowledgeSources
+
+    if (!Array.isArray(outputKnowledgeSources)) {
+      return
+    }
+
+    outputKnowledgeSources.forEach((source) => {
+      if (typeof source === 'string' && source.trim()) {
+        sources.add(formatKnowledgeSourceName(source))
+        return
+      }
+
+      const sourceRecord = getRecordObject(source)
+      const sourceName =
+        sourceRecord &&
+        ['title', 'name', 'Name', 'displayName', 'sourceName']
+          .map((fieldName) => sourceRecord[fieldName])
+          .find(
+            (fieldValue): fieldValue is string =>
+              typeof fieldValue === 'string' && Boolean(fieldValue.trim()),
+          )
+
+      if (sourceName) {
+        sources.add(formatKnowledgeSourceName(sourceName))
+      }
+    })
   })
 
   return [...sources]
