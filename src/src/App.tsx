@@ -3,6 +3,12 @@ import './App.css'
 function App() {
   return (
     <main className="landing-page">
+      <p className="credit">
+        Made by{' '}
+        <a href="https://timh.ai" target="_blank" rel="noreferrer">
+          Tim Hanewich
+        </a>
+      </p>
       <section className="login-card" aria-labelledby="page-title">
         <h1 id="page-title">Copilot Studio Insights</h1>
         <label htmlFor="environment-url">Environment URL</label>
