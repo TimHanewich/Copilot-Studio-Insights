@@ -29,6 +29,8 @@ type TranscriptMetadata = {
 type BotSummary = {
   id: string
   name: string
+  iconSource: string | null
+  initials: string
   transcriptCount: number
   mostRecentConversation: Date | null
 }
@@ -142,6 +144,51 @@ function getBotName(bot: DataverseRecord) {
   )
 }
 
+function getBotIconSource(bot: DataverseRecord) {
+  const iconValue = getStringValue(bot, [
+    'iconbase64',
+    'iconBase64',
+    'IconBase64',
+    'boticon',
+    'botIcon',
+    'BotIcon',
+    'icon',
+    'Icon',
+    'image',
+    'Image',
+    'entityimage',
+    'picture',
+    'avatar',
+  ])
+
+  if (!iconValue) {
+    return null
+  }
+
+  if (
+    iconValue.startsWith('data:image/') ||
+    iconValue.startsWith('http://') ||
+    iconValue.startsWith('https://')
+  ) {
+    return iconValue
+  }
+
+  if (iconValue.trim().startsWith('<svg')) {
+    return `data:image/svg+xml;utf8,${encodeURIComponent(iconValue)}`
+  }
+
+  return `data:image/png;base64,${iconValue.replace(/\s/g, '')}`
+}
+
+function getBotInitials(botName: string) {
+  return botName
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0]?.toUpperCase())
+    .join('')
+}
+
 function getBotLookupKeys(bot: DataverseRecord) {
   return [
     getStringValue(bot, ['botid', 'BotId', 'id']),
@@ -185,6 +232,8 @@ function buildBotSummaries(
   const summaries = bots.map((bot, index) => ({
     id: getBotId(bot, index),
     name: getBotName(bot),
+    iconSource: getBotIconSource(bot),
+    initials: getBotInitials(getBotName(bot)),
     transcriptCount: 0,
     mostRecentConversation: null as Date | null,
   }))
@@ -363,12 +412,21 @@ function App() {
             {botSummaries.length > 0 ? (
               botSummaries.map((bot) => (
                 <article className="bot-row" key={bot.id}>
-                  <div>
-                    <h2>{bot.name}</h2>
-                    <p>
-                      Most recent interaction:{' '}
-                      {formatDate(bot.mostRecentConversation)}
-                    </p>
+                  <div className="bot-main">
+                    {bot.iconSource ? (
+                      <img className="bot-icon" src={bot.iconSource} alt="" />
+                    ) : (
+                      <span className="bot-icon bot-icon-fallback" aria-hidden="true">
+                        {bot.initials}
+                      </span>
+                    )}
+                    <div>
+                      <h2>{bot.name}</h2>
+                      <p>
+                        Most recent interaction:{' '}
+                        {formatDate(bot.mostRecentConversation)}
+                      </p>
+                    </div>
                   </div>
                   <div className="bot-stat">
                     <span>{bot.transcriptCount.toLocaleString()}</span>

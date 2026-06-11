@@ -178,12 +178,38 @@
 
 .bot-row {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 20px;
   padding: 18px 20px;
   border: 1px solid rgba(17, 24, 39, 0.08);
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.72);
+}
+
+.bot-main {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.bot-icon {
+  width: 56px;
+  height: 56px;
+  flex: 0 0 auto;
+  border-radius: 16px;
+  object-fit: cover;
+  background: #dbeafe;
+  box-shadow: inset 0 0 0 1px rgba(30, 58, 138, 0.12);
+}
+
+.bot-icon-fallback {
+  display: grid;
+  place-items: center;
+  color: #1e3a8a;
+  font-size: 1rem;
+  font-weight: 700;
 }
 
 .bot-row h2 {
@@ -262,6 +288,7 @@
 
   .bot-row {
     flex-direction: column;
+    align-items: flex-start;
   }
 
   .bot-stat {
