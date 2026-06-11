@@ -1,0 +1,1 @@
+- Never commit to git yourself.
