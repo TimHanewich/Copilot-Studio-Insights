@@ -184,6 +184,135 @@
   font-size: 0.86rem;
 }
 
+.makers-page {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.maker-list {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.maker-row {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.34fr) minmax(0, 0.66fr);
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.06);
+}
+
+.maker-profile {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.maker-avatar {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  color: #1e3a8a;
+  background: rgba(219, 234, 254, 0.9);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.maker-profile h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 1rem;
+  line-height: 1.1;
+}
+
+.maker-profile p {
+  margin: 4px 0 0;
+  color: #4b5563;
+  font-size: 0.82rem;
+}
+
+.maker-agent-list {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.maker-agent-pill {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid rgba(30, 64, 175, 0.12);
+  border-radius: 14px;
+  color: #111827;
+  background: rgba(239, 246, 255, 0.88);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.maker-agent-pill:hover,
+.maker-agent-pill:focus-visible {
+  background: rgba(219, 234, 254, 0.94);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.maker-agent-pill:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.22);
+  outline-offset: 2px;
+}
+
+.maker-agent-pill img,
+.maker-agent-pill > span {
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+}
+
+.maker-agent-pill img {
+  object-fit: cover;
+}
+
+.maker-agent-pill > span {
+  display: grid;
+  place-items: center;
+  color: #1e3a8a;
+  background: #dbeafe;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.maker-agent-pill strong {
+  min-width: 0;
+  overflow: hidden;
+  color: #111827;
+  font-size: 0.86rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.maker-agent-pill small {
+  color: #4b5563;
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
 .credit {
   position: absolute;
   top: 20px;
@@ -831,6 +960,7 @@
   .agent-detail,
   .conversation-review-layout,
   .detail-grid,
+  .maker-row,
   .review-summary {
     grid-template-columns: 1fr;
   }

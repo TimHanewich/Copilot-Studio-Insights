@@ -65,6 +65,12 @@ type TranscriptReviewDetails = {
   knowledgeSources: string[]
 }
 
+type MakerSummary = {
+  id: string
+  name: string
+  agents: BotSummary[]
+}
+
 type AppView = 'dashboard' | 'agents' | 'makers' | 'knowledge' | 'feedback'
 
 const APP_NAV_ITEMS: { id: AppView; label: string }[] = [
@@ -336,6 +342,46 @@ function buildBotSummaries(
       first.name.localeCompare(second.name)
     )
   })
+}
+
+function buildMakerSummaries(
+  bots: BotSummary[],
+  systemUsers: DataverseRecord[],
+): MakerSummary[] {
+  const makers = new Map<string, MakerSummary>()
+
+  bots.forEach((bot) => {
+    const makerId =
+      getStringValue(bot.record, ['_createdby_value', 'createdby']) ?? 'unknown-maker'
+    const makerKey = normalizeLookupKey(makerId)
+    const existingMaker = makers.get(makerKey)
+
+    if (existingMaker) {
+      existingMaker.agents.push(bot)
+      return
+    }
+
+    makers.set(makerKey, {
+      id: makerKey,
+      name:
+        makerId === 'unknown-maker'
+          ? 'Unknown maker'
+          : getSystemUserDisplayName(systemUsers, makerId),
+      agents: [bot],
+    })
+  })
+
+  return [...makers.values()]
+    .map((maker) => ({
+      ...maker,
+      agents: [...maker.agents].sort((first, second) =>
+        first.name.localeCompare(second.name),
+      ),
+    }))
+    .sort(
+      (first, second) =>
+        second.agents.length - first.agents.length || first.name.localeCompare(second.name),
+    )
 }
 
 function formatDate(date: Date | null) {
@@ -746,7 +792,14 @@ function App() {
     null,
   )
   const isLoggingIn = inProgress !== InteractionStatus.None
-  const botSummaries = buildBotSummaries(bots, conversationTranscripts)
+  const botSummaries = useMemo(
+    () => buildBotSummaries(bots, conversationTranscripts),
+    [bots, conversationTranscripts],
+  )
+  const makerSummaries = useMemo(
+    () => buildMakerSummaries(botSummaries, systemUsers),
+    [botSummaries, systemUsers],
+  )
   const totalSessionCount = conversationTranscriptCount ?? conversationTranscripts.length
   const totalMakerCount = useMemo(
     () =>
@@ -912,8 +965,7 @@ function App() {
             {activeView === 'dashboard' ? (
               <div className="dashboard-page">
                 <div className="dashboard-heading">
-                  <p className="eyebrow">Dashboard</p>
-                  <h1 id="dashboard-title">Copilot Studio Activity</h1>
+                  <h1 id="dashboard-title">Copilot Studio Telemetry Dashboard</h1>
                   <p>{environmentOrigin}</p>
                 </div>
                 <div className="dashboard-metrics" aria-label="Environment totals">
@@ -1202,6 +1254,65 @@ function App() {
                 )}
               </div>
             </>
+            ) : activeView === 'makers' ? (
+              <div className="makers-page">
+                <div className="dashboard-heading">
+                  <p className="eyebrow">Makers</p>
+                  <h1>Agent makers</h1>
+                  <p>
+                    {makerSummaries.length.toLocaleString()} makers have created agents in
+                    this environment.
+                  </p>
+                </div>
+                <div className="maker-list" aria-label="Agent makers">
+                  {makerSummaries.length > 0 ? (
+                    makerSummaries.map((maker) => (
+                      <article className="maker-row" key={maker.id}>
+                        <div className="maker-profile">
+                          <span className="maker-avatar" aria-hidden="true">
+                            {getBotInitials(maker.name)}
+                          </span>
+                          <div>
+                            <h2>{maker.name}</h2>
+                            <p>
+                              {maker.agents.length.toLocaleString()}{' '}
+                              {maker.agents.length === 1 ? 'agent' : 'agents'} created
+                            </p>
+                          </div>
+                        </div>
+                        <div className="maker-agent-list">
+                          {maker.agents.map((agent) => (
+                            <button
+                              className="maker-agent-pill"
+                              key={agent.id}
+                              type="button"
+                              onClick={() => {
+                                setActiveView('agents')
+                                setSelectedBotId(agent.id)
+                                setSelectedTranscriptId(null)
+                              }}
+                            >
+                              {agent.iconSource ? (
+                                <img src={agent.iconSource} alt="" />
+                              ) : (
+                                <span aria-hidden="true">{agent.initials}</span>
+                              )}
+                              <strong>{agent.name}</strong>
+                              <small>
+                                {agent.transcriptCount.toLocaleString()} sessions
+                              </small>
+                            </button>
+                          ))}
+                        </div>
+                      </article>
+                    ))
+                  ) : (
+                    <p className="empty-message">
+                      No agent makers were found in this environment.
+                    </p>
+                  )}
+                </div>
+              </div>
             ) : (
               <div className="placeholder-page">
                 <p className="eyebrow">
