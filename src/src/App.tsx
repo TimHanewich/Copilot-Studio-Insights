@@ -347,16 +347,15 @@ function App() {
       {showBotPanel ? (
         <section className="bot-panel" aria-labelledby="bot-panel-title">
           <div className="panel-heading">
-            <p className="eyebrow">Environment overview</p>
-            <h1 id="bot-panel-title">Bots</h1>
+            <h1 id="bot-panel-title">Your Environment</h1>
             <p className="environment-name">{environmentOrigin}</p>
           </div>
           <div className="panel-summary">
-            <span>{bots.length.toLocaleString()} bots</span>
+            <span>{bots.length.toLocaleString()} agents</span>
             <span>
               {conversationTranscriptCount?.toLocaleString() ??
                 conversationTranscripts.length.toLocaleString()}{' '}
-              transcripts
+              sessions
             </span>
             <span>{systemUsers.length.toLocaleString()} system users</span>
           </div>
