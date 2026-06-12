@@ -1308,14 +1308,16 @@ function App() {
         }
 
         thoughtEntities.forEach((thought, thoughtIndex) => {
+          const thoughtText = [thought.title, thought.text].filter(Boolean).join('\n')
+
           agentMessages.push({
             id: `${activityId}-thought-${thoughtIndex}`,
             author: 'agent',
             kind: 'thought',
-            title: thought.title,
-            text: thought.text ?? '',
+            title: null,
+            text: thoughtText,
             date: activityDate,
-            displayName: 'Agent thinking',
+            displayName: 'Agent Thinking',
           })
         })
 
@@ -2163,13 +2165,6 @@ function App() {
           aria-labelledby="telemetry-page-title"
           onSubmit={handleLogin}
         >
-          <button
-            type="button"
-            className="landing-back-button"
-            onClick={() => handleLandingModeChange('choice')}
-          >
-            Back to options
-          </button>
           <h1 id="telemetry-page-title">Copilot Studio Insights</h1>
           <input
             id="environment-url"
@@ -2194,13 +2189,6 @@ function App() {
           aria-labelledby="direct-line-page-title"
           onSubmit={handleDirectLineConnect}
         >
-          <button
-            type="button"
-            className="landing-back-button"
-            onClick={() => handleLandingModeChange('choice')}
-          >
-            Back to options
-          </button>
           <p className="eyebrow">Direct Line API</p>
           <h1 id="direct-line-page-title">Chat with your agent.</h1>
           <p className="login-card-copy">
@@ -2244,9 +2232,6 @@ function App() {
                     key={message.id}
                   >
                     <span className="chat-author">{message.displayName}</span>
-                    {message.title && (
-                      <strong className="chat-thought-title">{message.title}</strong>
-                    )}
                     <p>{message.text}</p>
                     {message.date && (
                       <time dateTime={message.date.toISOString()}>
