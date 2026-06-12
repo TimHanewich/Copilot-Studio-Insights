@@ -574,74 +574,51 @@
 }
 
 .landing-stage {
-  width: min(100%, 1120px);
-  display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-  gap: clamp(28px, 5vw, 72px);
-  align-items: end;
-  padding: clamp(28px, 5vw, 56px);
-  border: 1px solid rgba(255, 255, 255, 0.34);
-  border-radius: 34px;
-  background: rgba(245, 245, 243, 0.82);
-  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.24);
-  backdrop-filter: blur(18px);
+  width: min(100%, 920px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
   animation: panel-enter 520ms ease both;
 }
 
-.landing-copy {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.landing-copy h1 {
+.landing-stage h1 {
   margin: 0;
   color: #111111;
-  font-size: clamp(2.65rem, 7vw, 5.9rem);
-  line-height: 0.88;
-  letter-spacing: -0.08em;
-}
-
-.landing-copy p:last-child {
-  max-width: 520px;
-  margin: 0;
-  color: #343434;
-  font-size: clamp(1.05rem, 2vw, 1.35rem);
-  line-height: 1.35;
+  font-size: clamp(2.25rem, 6vw, 4.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.07em;
+  text-align: center;
 }
 
 .choice-grid {
+  width: 100%;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: 14px;
 }
 
 .choice-card {
-  min-height: 320px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 24px;
-  padding: clamp(22px, 4vw, 34px);
-  border: 1px solid rgba(17, 17, 17, 0.12);
-  border-radius: 26px;
-  color: #111111;
-  background: rgba(255, 255, 255, 0.74);
+  min-height: 74px;
+  display: grid;
+  place-items: center;
+  padding: 16px 24px;
+  border: 0;
+  border-radius: 999px;
+  color: #ffffff;
+  background: #111111;
   font: inherit;
-  text-align: left;
+  text-align: center;
   cursor: pointer;
   transition:
     background 180ms ease,
-    border-color 180ms ease,
-    color 180ms ease,
+    opacity 180ms ease,
     transform 180ms ease;
 }
 
 .choice-card:hover,
 .choice-card:focus-visible {
-  border-color: #111111;
-  color: #ffffff;
-  background: #111111;
+  opacity: 0.86;
   transform: translateY(-2px);
 }
 
@@ -650,27 +627,11 @@
   outline-offset: 4px;
 }
 
-.choice-card span {
-  color: currentColor;
-  font-size: 0.78rem;
-  font-weight: 800;
-  letter-spacing: 0.18em;
-}
-
 .choice-card strong {
-  margin-top: auto;
   color: currentColor;
-  font-size: clamp(1.45rem, 3vw, 2.35rem);
-  line-height: 0.96;
-  letter-spacing: -0.05em;
-}
-
-.choice-card p {
-  margin: 0;
-  color: currentColor;
-  font-size: 0.96rem;
-  line-height: 1.42;
-  opacity: 0.76;
+  font-size: clamp(1rem, 2vw, 1.18rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
 }
 
 .login-card {
@@ -1466,17 +1427,16 @@
     padding: 72px 16px 20px;
   }
 
-  .landing-stage,
   .choice-grid {
     grid-template-columns: 1fr;
   }
 
   .landing-stage {
-    padding: 24px;
+    gap: 20px;
   }
 
   .choice-card {
-    min-height: 240px;
+    min-height: 64px;
   }
 
   .login-card h1 {

@@ -2124,38 +2124,21 @@ function App() {
         </div>
       ) : landingMode === 'choice' ? (
         <section className="landing-stage" aria-labelledby="page-title">
-          <div className="landing-copy">
-            <p className="eyebrow">Copilot Studio Insights</p>
-            <h1 id="page-title">Choose your Copilot Studio workspace.</h1>
-            <p>
-              Review telemetry from Dataverse or open a clean Direct Line chat
-              surface for a published agent.
-            </p>
-          </div>
+          <h1 id="page-title">Copilot Studio Insights</h1>
           <div className="choice-grid" aria-label="Copilot Studio app options">
             <button
               className="choice-card"
               type="button"
               onClick={() => handleLandingModeChange('telemetry')}
             >
-              <span>01</span>
               <strong>Review Copilot Studio Telemetry in my environment</strong>
-              <p>
-                Sign in to your Dataverse environment and explore agents, sessions,
-                makers, knowledge sources, and feedback.
-              </p>
             </button>
             <button
               className="choice-card"
               type="button"
               onClick={() => handleLandingModeChange('direct-line-setup')}
             >
-              <span>02</span>
               <strong>Demo Interface with an agent via Direct Line API</strong>
-              <p>
-                Provide a Copilot Studio Token Endpoint, start a Direct Line
-                conversation, and chat with your agent.
-              </p>
             </button>
           </div>
         </section>
