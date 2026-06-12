@@ -2179,17 +2179,8 @@ function App() {
       ) : (
         <section className="live-chat-shell" aria-labelledby="live-chat-title">
           <div className="live-chat-header">
-            <button
-              type="button"
-              className="landing-back-button"
-              onClick={handleDirectLineReset}
-            >
-              New endpoint
-            </button>
             <div>
-              <p className="eyebrow">Direct Line Chat</p>
-              <h1 id="live-chat-title">Agent demo interface</h1>
-              <p>{directLineTokenEndpoint}</p>
+              <h1 id="live-chat-title">Direct Line API Demo Interface</h1>
             </div>
           </div>
           <div className="live-chat-panel">
