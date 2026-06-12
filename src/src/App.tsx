@@ -114,6 +114,9 @@ type DirectLineConversationResponse = {
 type DirectLineActivity = {
   type?: string
   id?: string
+  channelData?: {
+    clientActivityId?: string
+  }
   text?: string
   speak?: string
   timestamp?: string
@@ -141,6 +144,18 @@ type LiveChatMessage = {
   text: string
   date: Date | null
   displayName: string
+}
+
+type DirectLinePostActivity = {
+  type: string
+  text?: string
+  from: {
+    id: string
+    role: 'user'
+  }
+  channelData?: {
+    clientActivityId: string
+  }
 }
 
 const APP_NAV_ITEMS: { id: AppView; label: string }[] = [
@@ -290,7 +305,7 @@ async function fetchDirectLineActivities(
 
 async function postDirectLineActivity(
   session: DirectLineSession,
-  activity: { type: string; text?: string; from: { id: string } },
+  activity: DirectLinePostActivity,
 ) {
   const response = await fetch(
     `${DIRECT_LINE_BASE_URL}/conversations/${session.conversationId}/activities`,
@@ -339,6 +354,12 @@ function getDirectLineErrorText(error: unknown) {
   return error instanceof Error
     ? error.message
     : 'Unable to connect to the agent through Direct Line.'
+}
+
+function getDirectLineClientActivityId(activity: DirectLineActivity) {
+  return typeof activity.channelData?.clientActivityId === 'string'
+    ? activity.channelData.clientActivityId
+    : null
 }
 
 async function fetchDataverseCollection(
@@ -1147,6 +1168,7 @@ function App() {
   const [directLineIsAwaitingAgent, setDirectLineIsAwaitingAgent] = useState(false)
   const directLineWatermarkRef = useRef<string | null>(null)
   const directLineIsPollingRef = useRef(false)
+  const directLineUserActivityIdsRef = useRef<Set<string>>(new Set())
   const liveChatThreadRef = useRef<HTMLDivElement | null>(null)
   const [conversationTranscripts, setConversationTranscripts] = useState<
     DataverseRecord[]
@@ -1229,7 +1251,15 @@ function App() {
       const activities = activitiesResponse.activities ?? []
 
       activities.forEach((activity, index) => {
-        if (activity.type !== 'message' || activity.from?.id === DIRECT_LINE_USER_ID) {
+        const clientActivityId = getDirectLineClientActivityId(activity)
+        const isUserEcho =
+          activity.from?.id === DIRECT_LINE_USER_ID ||
+          activity.from?.role === 'user' ||
+          (clientActivityId
+            ? directLineUserActivityIdsRef.current.has(clientActivityId)
+            : false)
+
+        if (activity.type !== 'message' || isUserEcho) {
           return
         }
 
@@ -1323,6 +1353,7 @@ function App() {
 
   function handleDirectLineReset() {
     directLineWatermarkRef.current = null
+    directLineUserActivityIdsRef.current.clear()
     setDirectLineSession(null)
     setDirectLineMessages([])
     setDirectLineInput('')
@@ -1354,6 +1385,7 @@ function App() {
     try {
       setIsConnectingDirectLine(true)
       directLineWatermarkRef.current = null
+      directLineUserActivityIdsRef.current.clear()
       setDirectLineSession(null)
       setDirectLineMessages([])
       setDirectLineIsAwaitingAgent(false)
@@ -1409,13 +1441,16 @@ function App() {
       return
     }
 
+    const userMessageId = `user-message-${Date.now()}`
+
     setDirectLineInput('')
     setIsSendingDirectLine(true)
     setDirectLineIsAwaitingAgent(true)
+    directLineUserActivityIdsRef.current.add(userMessageId)
     setDirectLineMessages((currentMessages) => [
       ...currentMessages,
       {
-        id: `user-message-${Date.now()}`,
+        id: userMessageId,
         author: 'user',
         text: messageText,
         date: new Date(),
@@ -1427,7 +1462,13 @@ function App() {
       await postDirectLineActivity(session, {
         type: 'message',
         text: messageText,
-        from: { id: DIRECT_LINE_USER_ID },
+        from: {
+          id: DIRECT_LINE_USER_ID,
+          role: 'user',
+        },
+        channelData: {
+          clientActivityId: userMessageId,
+        },
       })
       await retrieveDirectLineActivities(session)
     } catch (error) {
