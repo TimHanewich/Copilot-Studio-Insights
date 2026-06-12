@@ -1,4 +1,4 @@
-import { useMemo, useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { InteractionStatus } from '@azure/msal-browser'
 import { useMsal } from '@azure/msal-react'
 import './App.css'
@@ -9,6 +9,8 @@ const BOTS_TABLE = 'bots'
 const SYSTEM_USERS_TABLE = 'systemusers'
 const LAST_ENVIRONMENT_URL_STORAGE_KEY =
   'copilot-studio-insights:last-environment-url'
+const DIRECT_LINE_BASE_URL = 'https://directline.botframework.com/v3/directline'
+const DIRECT_LINE_USER_ID = 'copilot-studio-insights-user'
 
 type DataverseRecord = Record<string, unknown>
 
@@ -93,7 +95,53 @@ type FeedbackSummary = {
   feedback: MessageFeedback
 }
 
+type LandingMode = 'choice' | 'telemetry' | 'direct-line-setup' | 'direct-line-chat'
+
 type AppView = 'dashboard' | 'agents' | 'makers' | 'knowledge' | 'feedback'
+
+type DirectLineTokenResponse = {
+  token?: string
+  expires_in?: number
+  conversationId?: string
+}
+
+type DirectLineConversationResponse = {
+  token?: string
+  expires_in?: number
+  conversationId?: string
+}
+
+type DirectLineActivity = {
+  type?: string
+  id?: string
+  text?: string
+  speak?: string
+  timestamp?: string
+  from?: {
+    id?: string
+    name?: string
+    role?: string
+  }
+}
+
+type DirectLineActivitiesResponse = {
+  activities?: DirectLineActivity[]
+  watermark?: string
+}
+
+type DirectLineSession = {
+  token: string
+  conversationId: string
+  expiresAt: Date | null
+}
+
+type LiveChatMessage = {
+  id: string
+  author: 'user' | 'agent'
+  text: string
+  date: Date | null
+  displayName: string
+}
 
 const APP_NAV_ITEMS: { id: AppView; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
@@ -132,6 +180,165 @@ function storeLastEnvironmentUrl(environmentUrl: string) {
   } catch (error) {
     console.warn('Unable to save the environment URL.', error)
   }
+}
+
+async function getResponseErrorMessage(response: Response, fallbackMessage: string) {
+  const responseBody = await response.text()
+  let detail = responseBody.trim()
+
+  if (detail) {
+    try {
+      const parsedBody: unknown = JSON.parse(detail)
+
+      if (
+        parsedBody &&
+        typeof parsedBody === 'object' &&
+        'error' in parsedBody &&
+        typeof parsedBody.error === 'object' &&
+        parsedBody.error &&
+        'message' in parsedBody.error &&
+        typeof parsedBody.error.message === 'string'
+      ) {
+        detail = parsedBody.error.message
+      } else if (
+        parsedBody &&
+        typeof parsedBody === 'object' &&
+        'message' in parsedBody &&
+        typeof parsedBody.message === 'string'
+      ) {
+        detail = parsedBody.message
+      }
+    } catch {
+      detail = responseBody.trim()
+    }
+  }
+
+  const statusText = `${response.status} ${response.statusText}`.trim()
+
+  return detail
+    ? `${fallbackMessage} (${statusText}): ${detail}`
+    : `${fallbackMessage} (${statusText}).`
+}
+
+async function requestDirectLineToken(tokenEndpoint: string) {
+  const response = await fetch(tokenEndpoint)
+
+  if (!response.ok) {
+    throw new Error(
+      await getResponseErrorMessage(
+        response,
+        'Unable to request a Direct Line token from the token endpoint',
+      ),
+    )
+  }
+
+  const tokenResponse = (await response.json()) as DirectLineTokenResponse
+
+  if (!tokenResponse.token) {
+    throw new Error('The token endpoint did not return a Direct Line token.')
+  }
+
+  return tokenResponse
+}
+
+async function startDirectLineConversation(token: string) {
+  const response = await fetch(`${DIRECT_LINE_BASE_URL}/conversations`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error(
+      await getResponseErrorMessage(
+        response,
+        'Unable to start a Direct Line conversation',
+      ),
+    )
+  }
+
+  return (await response.json()) as DirectLineConversationResponse
+}
+
+async function fetchDirectLineActivities(
+  session: DirectLineSession,
+  watermark: string | null,
+) {
+  const endpoint = new URL(
+    `${DIRECT_LINE_BASE_URL}/conversations/${session.conversationId}/activities`,
+  )
+
+  if (watermark) {
+    endpoint.searchParams.set('watermark', watermark)
+  }
+
+  const response = await fetch(endpoint, {
+    headers: {
+      Authorization: `Bearer ${session.token}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error(
+      await getResponseErrorMessage(response, 'Unable to retrieve agent activities'),
+    )
+  }
+
+  return (await response.json()) as DirectLineActivitiesResponse
+}
+
+async function postDirectLineActivity(
+  session: DirectLineSession,
+  activity: { type: string; text?: string; from: { id: string } },
+) {
+  const response = await fetch(
+    `${DIRECT_LINE_BASE_URL}/conversations/${session.conversationId}/activities`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${session.token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(activity),
+    },
+  )
+
+  if (!response.ok) {
+    throw new Error(
+      await getResponseErrorMessage(response, 'Unable to send the Direct Line activity'),
+    )
+  }
+
+  return response
+}
+
+function getDirectLineActivityText(activity: DirectLineActivity) {
+  if (typeof activity.text === 'string' && activity.text.trim()) {
+    return activity.text.trim()
+  }
+
+  if (typeof activity.speak === 'string' && activity.speak.trim()) {
+    return activity.speak.trim()
+  }
+
+  return null
+}
+
+function getDirectLineActivityDate(activity: DirectLineActivity) {
+  if (!activity.timestamp) {
+    return null
+  }
+
+  const date = new Date(activity.timestamp)
+
+  return Number.isNaN(date.getTime()) ? null : date
+}
+
+function getDirectLineErrorText(error: unknown) {
+  return error instanceof Error
+    ? error.message
+    : 'Unable to connect to the agent through Direct Line.'
 }
 
 async function fetchDataverseCollection(
@@ -924,9 +1131,23 @@ function buildFeedbackSummaries(
 
 function App() {
   const { instance, inProgress } = useMsal()
+  const [landingMode, setLandingMode] = useState<LandingMode>('choice')
   const [environmentUrl, setEnvironmentUrl] = useState(getStoredEnvironmentUrl)
   const [errorMessage, setErrorMessage] = useState('')
   const [environmentOrigin, setEnvironmentOrigin] = useState('')
+  const [directLineTokenEndpoint, setDirectLineTokenEndpoint] = useState('')
+  const [directLineErrorMessage, setDirectLineErrorMessage] = useState('')
+  const [directLineSession, setDirectLineSession] = useState<DirectLineSession | null>(
+    null,
+  )
+  const [directLineMessages, setDirectLineMessages] = useState<LiveChatMessage[]>([])
+  const [directLineInput, setDirectLineInput] = useState('')
+  const [isConnectingDirectLine, setIsConnectingDirectLine] = useState(false)
+  const [isSendingDirectLine, setIsSendingDirectLine] = useState(false)
+  const [directLineIsAwaitingAgent, setDirectLineIsAwaitingAgent] = useState(false)
+  const directLineWatermarkRef = useRef<string | null>(null)
+  const directLineIsPollingRef = useRef(false)
+  const liveChatThreadRef = useRef<HTMLDivElement | null>(null)
   const [conversationTranscripts, setConversationTranscripts] = useState<
     DataverseRecord[]
   >([])
@@ -992,6 +1213,230 @@ function App() {
   const selectedTranscriptReviewDetails = selectedTranscript
     ? getTranscriptReviewDetails(selectedTranscript.record)
     : null
+
+  const retrieveDirectLineActivities = useCallback(
+    async (session: DirectLineSession) => {
+      const activitiesResponse = await fetchDirectLineActivities(
+        session,
+        directLineWatermarkRef.current,
+      )
+
+      if (typeof activitiesResponse.watermark === 'string') {
+        directLineWatermarkRef.current = activitiesResponse.watermark
+      }
+
+      const agentMessages: LiveChatMessage[] = []
+      const activities = activitiesResponse.activities ?? []
+
+      activities.forEach((activity, index) => {
+        if (activity.type !== 'message' || activity.from?.id === DIRECT_LINE_USER_ID) {
+          return
+        }
+
+        const text = getDirectLineActivityText(activity)
+
+        if (!text) {
+          return
+        }
+
+        agentMessages.push({
+          id:
+            typeof activity.id === 'string'
+              ? activity.id
+              : `direct-line-message-${Date.now()}-${index}`,
+          author: 'agent',
+          text,
+          date: getDirectLineActivityDate(activity),
+          displayName: activity.from?.name || 'Agent',
+        })
+      })
+
+      if (agentMessages.length > 0) {
+        setDirectLineIsAwaitingAgent(false)
+        setDirectLineMessages((currentMessages) => {
+          const currentMessageIds = new Set(
+            currentMessages.map((message) => message.id),
+          )
+          const newMessages = agentMessages.filter(
+            (message) => !currentMessageIds.has(message.id),
+          )
+
+          return newMessages.length > 0
+            ? [...currentMessages, ...newMessages]
+            : currentMessages
+        })
+      }
+
+      return agentMessages.length
+    },
+    [],
+  )
+
+  useEffect(() => {
+    const thread = liveChatThreadRef.current
+
+    if (thread) {
+      thread.scrollTop = thread.scrollHeight
+    }
+  }, [directLineMessages, directLineIsAwaitingAgent])
+
+  useEffect(() => {
+    if (!directLineSession || landingMode !== 'direct-line-chat') {
+      return
+    }
+
+    let isCancelled = false
+
+    async function pollActivities() {
+      if (isCancelled || directLineIsPollingRef.current || !directLineSession) {
+        return
+      }
+
+      directLineIsPollingRef.current = true
+
+      try {
+        await retrieveDirectLineActivities(directLineSession)
+      } catch (error) {
+        if (!isCancelled) {
+          setDirectLineErrorMessage(getDirectLineErrorText(error))
+          setDirectLineIsAwaitingAgent(false)
+        }
+      } finally {
+        directLineIsPollingRef.current = false
+      }
+    }
+
+    pollActivities()
+    const pollingIntervalId = window.setInterval(pollActivities, 2500)
+
+    return () => {
+      isCancelled = true
+      window.clearInterval(pollingIntervalId)
+    }
+  }, [directLineSession, landingMode, retrieveDirectLineActivities])
+
+  function handleLandingModeChange(nextLandingMode: LandingMode) {
+    setLandingMode(nextLandingMode)
+    setErrorMessage('')
+    setDirectLineErrorMessage('')
+  }
+
+  function handleDirectLineReset() {
+    directLineWatermarkRef.current = null
+    setDirectLineSession(null)
+    setDirectLineMessages([])
+    setDirectLineInput('')
+    setDirectLineIsAwaitingAgent(false)
+    setDirectLineErrorMessage('')
+    setLandingMode('direct-line-setup')
+  }
+
+  async function handleDirectLineConnect(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setDirectLineErrorMessage('')
+
+    const trimmedTokenEndpoint = directLineTokenEndpoint.trim()
+
+    if (!trimmedTokenEndpoint) {
+      setDirectLineErrorMessage('Enter a Token Endpoint before starting the demo.')
+      return
+    }
+
+    let parsedTokenEndpoint: string
+
+    try {
+      parsedTokenEndpoint = new URL(trimmedTokenEndpoint).toString()
+    } catch {
+      setDirectLineErrorMessage('Enter a valid Token Endpoint URL.')
+      return
+    }
+
+    try {
+      setIsConnectingDirectLine(true)
+      directLineWatermarkRef.current = null
+      setDirectLineSession(null)
+      setDirectLineMessages([])
+      setDirectLineIsAwaitingAgent(false)
+      setDirectLineTokenEndpoint(parsedTokenEndpoint)
+
+      const tokenResponse = await requestDirectLineToken(parsedTokenEndpoint)
+      const directLineToken = tokenResponse.token
+
+      if (!directLineToken) {
+        throw new Error('The token endpoint did not return a Direct Line token.')
+      }
+
+      const conversationResponse = await startDirectLineConversation(directLineToken)
+      const conversationId =
+        conversationResponse.conversationId ?? tokenResponse.conversationId
+
+      if (!conversationId) {
+        throw new Error('Direct Line did not return a conversation ID.')
+      }
+
+      const expiresIn = conversationResponse.expires_in ?? tokenResponse.expires_in
+
+      setDirectLineSession({
+        token: conversationResponse.token ?? directLineToken,
+        conversationId,
+        expiresAt:
+          typeof expiresIn === 'number' && Number.isFinite(expiresIn)
+            ? new Date(Date.now() + expiresIn * 1000)
+            : null,
+      })
+      setLandingMode('direct-line-chat')
+    } catch (error) {
+      setDirectLineErrorMessage(getDirectLineErrorText(error))
+    } finally {
+      setIsConnectingDirectLine(false)
+    }
+  }
+
+  async function handleDirectLineMessageSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setDirectLineErrorMessage('')
+
+    const session = directLineSession
+    const messageText = directLineInput.trim()
+
+    if (!session) {
+      setDirectLineErrorMessage('Start a Direct Line conversation before chatting.')
+      return
+    }
+
+    if (!messageText) {
+      setDirectLineErrorMessage('Enter a message before sending.')
+      return
+    }
+
+    setDirectLineInput('')
+    setIsSendingDirectLine(true)
+    setDirectLineIsAwaitingAgent(true)
+    setDirectLineMessages((currentMessages) => [
+      ...currentMessages,
+      {
+        id: `user-message-${Date.now()}`,
+        author: 'user',
+        text: messageText,
+        date: new Date(),
+        displayName: 'You',
+      },
+    ])
+
+    try {
+      await postDirectLineActivity(session, {
+        type: 'message',
+        text: messageText,
+        from: { id: DIRECT_LINE_USER_ID },
+      })
+      await retrieveDirectLineActivities(session)
+    } catch (error) {
+      setDirectLineErrorMessage(getDirectLineErrorText(error))
+      setDirectLineIsAwaitingAgent(false)
+    } finally {
+      setIsSendingDirectLine(false)
+    }
+  }
 
   async function handleLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -1586,13 +2031,57 @@ function App() {
             )}
           </section>
         </div>
-      ) : (
+      ) : landingMode === 'choice' ? (
+        <section className="landing-stage" aria-labelledby="page-title">
+          <div className="landing-copy">
+            <p className="eyebrow">Copilot Studio Insights</p>
+            <h1 id="page-title">Choose your Copilot Studio workspace.</h1>
+            <p>
+              Review telemetry from Dataverse or open a clean Direct Line chat
+              surface for a published agent.
+            </p>
+          </div>
+          <div className="choice-grid" aria-label="Copilot Studio app options">
+            <button
+              className="choice-card"
+              type="button"
+              onClick={() => handleLandingModeChange('telemetry')}
+            >
+              <span>01</span>
+              <strong>Review Copilot Studio Telemetry in my environment</strong>
+              <p>
+                Sign in to your Dataverse environment and explore agents, sessions,
+                makers, knowledge sources, and feedback.
+              </p>
+            </button>
+            <button
+              className="choice-card"
+              type="button"
+              onClick={() => handleLandingModeChange('direct-line-setup')}
+            >
+              <span>02</span>
+              <strong>Demo Interface with an agent via Direct Line API</strong>
+              <p>
+                Provide a Copilot Studio Token Endpoint, start a Direct Line
+                conversation, and chat with your agent.
+              </p>
+            </button>
+          </div>
+        </section>
+      ) : landingMode === 'telemetry' ? (
         <form
           className="login-card"
-          aria-labelledby="page-title"
+          aria-labelledby="telemetry-page-title"
           onSubmit={handleLogin}
         >
-          <h1 id="page-title">Copilot Studio Insights</h1>
+          <button
+            type="button"
+            className="landing-back-button"
+            onClick={() => handleLandingModeChange('choice')}
+          >
+            Back to options
+          </button>
+          <h1 id="telemetry-page-title">Copilot Studio Insights</h1>
           <input
             id="environment-url"
             name="environmentUrl"
@@ -1602,7 +2091,7 @@ function App() {
             onChange={(event) => setEnvironmentUrl(event.target.value)}
             required
           />
-          <button type="submit" disabled={isLoggingIn}>
+          <button type="submit" disabled={isLoggingIn || isLoadingDataverseData}>
             {isLoggingIn || isLoadingDataverseData ? 'Loading...' : 'Login'}
           </button>
           {isLoadingDataverseData && (
@@ -1610,6 +2099,116 @@ function App() {
           )}
           {errorMessage && <p className="error-message">{errorMessage}</p>}
         </form>
+      ) : landingMode === 'direct-line-setup' ? (
+        <form
+          className="login-card direct-line-setup-card"
+          aria-labelledby="direct-line-page-title"
+          onSubmit={handleDirectLineConnect}
+        >
+          <button
+            type="button"
+            className="landing-back-button"
+            onClick={() => handleLandingModeChange('choice')}
+          >
+            Back to options
+          </button>
+          <p className="eyebrow">Direct Line API</p>
+          <h1 id="direct-line-page-title">Chat with your agent.</h1>
+          <p className="login-card-copy">
+            Paste the Token Endpoint from your published Copilot Studio agent.
+            The app will request a Direct Line token, start the conversation, and
+            poll for agent responses.
+          </p>
+          <input
+            id="direct-line-token-endpoint"
+            name="directLineTokenEndpoint"
+            type="url"
+            placeholder="Token Endpoint"
+            value={directLineTokenEndpoint}
+            onChange={(event) => setDirectLineTokenEndpoint(event.target.value)}
+            required
+          />
+          <button type="submit" disabled={isConnectingDirectLine}>
+            {isConnectingDirectLine ? 'Starting chat...' : 'Start chat'}
+          </button>
+          {directLineErrorMessage && (
+            <p className="error-message">{directLineErrorMessage}</p>
+          )}
+        </form>
+      ) : (
+        <section className="live-chat-shell" aria-labelledby="live-chat-title">
+          <div className="live-chat-header">
+            <button
+              type="button"
+              className="landing-back-button"
+              onClick={handleDirectLineReset}
+            >
+              New endpoint
+            </button>
+            <div>
+              <p className="eyebrow">Direct Line Chat</p>
+              <h1 id="live-chat-title">Agent demo interface</h1>
+              <p>{directLineTokenEndpoint}</p>
+            </div>
+          </div>
+          <div className="live-chat-panel">
+            <div
+              className="chat-thread live-chat-thread"
+              ref={liveChatThreadRef}
+              aria-label="Live Direct Line conversation"
+            >
+              {directLineMessages.length > 0 ? (
+                directLineMessages.map((message) => (
+                  <article
+                    className={`chat-message is-${message.author}`}
+                    key={message.id}
+                  >
+                    <span className="chat-author">{message.displayName}</span>
+                    <p>{message.text}</p>
+                    {message.date && (
+                      <time dateTime={message.date.toISOString()}>
+                        {formatDate(message.date)}
+                      </time>
+                    )}
+                  </article>
+                ))
+              ) : (
+                <p className="empty-message">
+                  Send a message to begin the Direct Line conversation.
+                </p>
+              )}
+              {directLineIsAwaitingAgent && (
+                <article className="chat-message is-agent is-typing">
+                  <span className="chat-author">Agent</span>
+                  <p>Thinking...</p>
+                </article>
+              )}
+            </div>
+            <form className="live-chat-form" onSubmit={handleDirectLineMessageSubmit}>
+              <input
+                aria-label="Message"
+                type="text"
+                placeholder="Ask your agent anything..."
+                value={directLineInput}
+                onChange={(event) => setDirectLineInput(event.target.value)}
+              />
+              <button
+                type="submit"
+                disabled={!directLineInput.trim() || isSendingDirectLine}
+              >
+                {isSendingDirectLine ? 'Sending...' : 'Send'}
+              </button>
+            </form>
+            {directLineSession?.expiresAt && (
+              <p className="status-message">
+                Direct Line token expires {formatDate(directLineSession.expiresAt)}.
+              </p>
+            )}
+            {directLineErrorMessage && (
+              <p className="error-message">{directLineErrorMessage}</p>
+            )}
+          </div>
+        </section>
       )}
     </main>
   )
