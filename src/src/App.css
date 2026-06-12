@@ -1251,6 +1251,12 @@
   align-self: flex-start;
 }
 
+.chat-message.is-thought {
+  background: rgba(17, 17, 17, 0.88);
+  color: #ffffff;
+  box-shadow: none;
+}
+
 .chat-message.is-typing p {
   color: #4b5563;
   font-style: italic;
@@ -1265,11 +1271,28 @@
   text-transform: uppercase;
 }
 
+.chat-message.is-thought .chat-author,
+.chat-message.is-thought time {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.chat-thought-title {
+  display: block;
+  margin-top: 8px;
+  color: inherit;
+  font-size: 1rem;
+  line-height: 1.1;
+}
+
 .chat-message p {
   margin: 6px 0 0;
   color: #111827;
   font-size: 0.88rem;
   white-space: pre-wrap;
+}
+
+.chat-message.is-thought p {
+  color: rgba(255, 255, 255, 0.84);
 }
 
 .message-feedback-badge {

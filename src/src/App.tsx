@@ -111,12 +111,19 @@ type DirectLineConversationResponse = {
   conversationId?: string
 }
 
+type DirectLineEntity = {
+  type?: string
+  title?: string
+  text?: string
+}
+
 type DirectLineActivity = {
   type?: string
   id?: string
   channelData?: {
     clientActivityId?: string
   }
+  entities?: DirectLineEntity[]
   text?: string
   speak?: string
   timestamp?: string
@@ -141,6 +148,8 @@ type DirectLineSession = {
 type LiveChatMessage = {
   id: string
   author: 'user' | 'agent'
+  kind: 'message' | 'thought'
+  title: string | null
   text: string
   date: Date | null
   displayName: string
@@ -338,6 +347,27 @@ function getDirectLineActivityText(activity: DirectLineActivity) {
   }
 
   return null
+}
+
+function getDirectLineThoughtEntities(activity: DirectLineActivity) {
+  return (activity.entities ?? [])
+    .filter((entity) => entity.type === 'thought')
+    .map((entity) => {
+      const title =
+        typeof entity.title === 'string' && entity.title.trim()
+          ? entity.title.trim()
+          : null
+      const text =
+        typeof entity.text === 'string' && entity.text.trim()
+          ? entity.text.trim()
+          : null
+
+      return title || text ? { title, text } : null
+    })
+    .filter(
+      (thought): thought is { title: string | null; text: string | null } =>
+        Boolean(thought),
+    )
 }
 
 function getDirectLineActivityDate(activity: DirectLineActivity) {
@@ -1248,6 +1278,7 @@ function App() {
       }
 
       const agentMessages: LiveChatMessage[] = []
+      let hasAgentAnswer = false
       const activities = activitiesResponse.activities ?? []
 
       activities.forEach((activity, index) => {
@@ -1263,26 +1294,52 @@ function App() {
           return
         }
 
+        const activityDate = getDirectLineActivityDate(activity)
+        const activityId =
+          typeof activity.id === 'string'
+            ? activity.id
+            : `direct-line-message-${Date.now()}-${index}`
+        const displayName = activity.from?.name || 'Agent'
+        const thoughtEntities = getDirectLineThoughtEntities(activity)
         const text = getDirectLineActivityText(activity)
+
+        if (thoughtEntities.length === 0 && !text) {
+          return
+        }
+
+        thoughtEntities.forEach((thought, thoughtIndex) => {
+          agentMessages.push({
+            id: `${activityId}-thought-${thoughtIndex}`,
+            author: 'agent',
+            kind: 'thought',
+            title: thought.title,
+            text: thought.text ?? '',
+            date: activityDate,
+            displayName: 'Agent thinking',
+          })
+        })
 
         if (!text) {
           return
         }
 
+        hasAgentAnswer = true
         agentMessages.push({
-          id:
-            typeof activity.id === 'string'
-              ? activity.id
-              : `direct-line-message-${Date.now()}-${index}`,
+          id: activityId,
           author: 'agent',
+          kind: 'message',
+          title: null,
           text,
-          date: getDirectLineActivityDate(activity),
-          displayName: activity.from?.name || 'Agent',
+          date: activityDate,
+          displayName,
         })
       })
 
-      if (agentMessages.length > 0) {
+      if (hasAgentAnswer) {
         setDirectLineIsAwaitingAgent(false)
+      }
+
+      if (agentMessages.length > 0) {
         setDirectLineMessages((currentMessages) => {
           const currentMessageIds = new Set(
             currentMessages.map((message) => message.id),
@@ -1349,17 +1406,6 @@ function App() {
     setLandingMode(nextLandingMode)
     setErrorMessage('')
     setDirectLineErrorMessage('')
-  }
-
-  function handleDirectLineReset() {
-    directLineWatermarkRef.current = null
-    directLineUserActivityIdsRef.current.clear()
-    setDirectLineSession(null)
-    setDirectLineMessages([])
-    setDirectLineInput('')
-    setDirectLineIsAwaitingAgent(false)
-    setDirectLineErrorMessage('')
-    setLandingMode('direct-line-setup')
   }
 
   async function handleDirectLineConnect(event: FormEvent<HTMLFormElement>) {
@@ -1452,6 +1498,8 @@ function App() {
       {
         id: userMessageId,
         author: 'user',
+        kind: 'message',
+        title: null,
         text: messageText,
         date: new Date(),
         displayName: 'You',
@@ -2192,10 +2240,13 @@ function App() {
               {directLineMessages.length > 0 ? (
                 directLineMessages.map((message) => (
                   <article
-                    className={`chat-message is-${message.author}`}
+                    className={`chat-message is-${message.author} is-${message.kind}`}
                     key={message.id}
                   >
                     <span className="chat-author">{message.displayName}</span>
+                    {message.title && (
+                      <strong className="chat-thought-title">{message.title}</strong>
+                    )}
                     <p>{message.text}</p>
                     {message.date && (
                       <time dateTime={message.date.toISOString()}>
