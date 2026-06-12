@@ -1,1 +1,2 @@
 - Never commit to git yourself.
+- Never update the content in the `docs` folder yourself.
