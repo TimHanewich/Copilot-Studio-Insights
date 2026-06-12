@@ -2267,11 +2267,6 @@ function App() {
                 {isSendingDirectLine ? 'Sending...' : 'Send'}
               </button>
             </form>
-            {directLineSession?.expiresAt && (
-              <p className="status-message">
-                Direct Line token expires {formatDate(directLineSession.expiresAt)}.
-              </p>
-            )}
             {directLineErrorMessage && (
               <p className="error-message">{directLineErrorMessage}</p>
             )}
