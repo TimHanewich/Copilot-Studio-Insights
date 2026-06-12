@@ -2138,7 +2138,7 @@ function App() {
               type="button"
               onClick={() => handleLandingModeChange('direct-line-setup')}
             >
-              <strong>Demo Interface with an agent via Direct Line API</strong>
+              <strong>Direct Line API Demo</strong>
             </button>
           </div>
         </section>
